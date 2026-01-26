@@ -30,7 +30,7 @@ const translations = {
     searchPlaceholder: "Ara",
     searchAria: "Arama",
     searchButton: "Arama yap",
-    deliveryTitle: "Çatdırılma",
+    deliveryTitle: "Paket servis",
     deliveryBody: "Hızlı ve güvenli teslimat deneyimi.",
     contactPreference: "İletişim tercihi",
     whatsapp: "WhatsApp",
@@ -109,7 +109,7 @@ export default function Home() {
   const t = useMemo(() => translations[language], [language]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+    <div className="relative min-h-screen overflow-hidden bg-slate-900 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.35),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(236,72,153,0.35),_transparent_60%)]" />
       <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-fuchsia-400/30 blur-3xl" />
@@ -122,22 +122,13 @@ export default function Home() {
             </p>
             <h1 className="flex items-center gap-3 text-4xl font-semibold tracking-tight sm:text-5xl">
               Fresh Start
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-200">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 7h11l3 5h4v6h-2" />
-                  <path d="M3 7v11h10" />
-                  <circle cx="7" cy="18" r="2" />
-                  <circle cx="18" cy="18" r="2" />
-                </svg>
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white">
+                <img
+                  src="/kurye/kurye.png"
+                  alt="Kurye"
+                  className="h-8 w-8 object-contain"
+                  loading="lazy"
+                />
               </span>
             </h1>
           </div>

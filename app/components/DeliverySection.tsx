@@ -14,28 +14,19 @@ type DeliverySectionProps = {
 export default function DeliverySection({ t }: DeliverySectionProps) {
   return (
     <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl shadow-cyan-500/20 backdrop-blur">
-      <div className="flex items-center gap-4">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/20 text-cyan-200">
-          <svg
-            viewBox="0 0 24 24"
-            className="h-6 w-6"
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 7h11l3 5h4v6h-2" />
-            <path d="M3 7v11h10" />
-            <circle cx="7" cy="18" r="2" />
-            <circle cx="18" cy="18" r="2" />
-          </svg>
-        </span>
-        <div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
+            <img
+              src="/kurye/kurye.png"
+              alt="Kurye"
+              className="h-12 w-12 object-contain"
+              loading="lazy"
+            />
+          </span>
           <p className="text-lg font-semibold">{t.deliveryTitle}</p>
-          <p className="text-sm text-slate-200/80">{t.deliveryBody}</p>
         </div>
+        <p className="text-sm text-slate-200/80">{t.deliveryBody}</p>
       </div>
       <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
         <p className="text-sm font-medium text-slate-100/90">
