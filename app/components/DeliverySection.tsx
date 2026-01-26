@@ -16,6 +16,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
     <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl shadow-cyan-500/20 backdrop-blur">
       <div className="space-y-1">
         <div className="flex items-center gap-3">
+          <p className="text-lg font-semibold">{t.deliveryTitle}</p>
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
             <img
               src="/kurye/kurye.png"
@@ -24,7 +25,6 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
               loading="lazy"
             />
           </span>
-          <p className="text-lg font-semibold">{t.deliveryTitle}</p>
         </div>
         <p className="text-sm text-slate-200/80">{t.deliveryBody}</p>
       </div>
