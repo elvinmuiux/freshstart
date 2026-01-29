@@ -5,15 +5,15 @@ import AboutSection from "./components/AboutSection";
 import DeliverySection from "./components/DeliverySection";
 
 const languageLabels = {
-  tr: "Türkçe",
   en: "English",
+  tr: "Türkçe",
   ru: "Русский",
   de: "Deutsch",
 };
 
 const languageFlags = {
-  tr: "🇹🇷",
   en: "🇬🇧",
+  tr: "🇹🇷",
   ru: "🇷🇺",
   de: "🇩🇪",
 };
@@ -46,7 +46,7 @@ const translations = {
     language: "Language",
     aboutTitle: "About Fresh Start",
     aboutBody:
-      "Fresh Start – World & Turkish Cuisine. Fresh Start brings together Turkish and world flavors prepared with fresh ingredients. From grilled dishes and home-style meals to bowls, sandwiches, and soups, everything is prepared daily with care. We serve in Antalya. Fresh & homemade flavors. Fast delivery and pick-up options. You can easily order via WhatsApp or browse our menu. Real flavor, clean kitchen, friendly service.",
+      "Fresh Start – World & Turkish Cuisine. We bring together Turkish and world flavors prepared with fresh ingredients. From grilled dishes and home-style meals to bowls, sandwiches, and soups, everything is prepared daily with care. We serve in Antalya, offering fresh & homemade flavors with fast delivery and pick-up options. You can easily order via WhatsApp or browse our menu. Real flavor, clean kitchen, friendly service.",
     searchPlaceholder: "Search",
     searchAria: "Search",
     searchButton: "Search",
@@ -103,7 +103,7 @@ const translations = {
 };
 
 export default function Home() {
-  const [language, setLanguage] = useState<keyof typeof languageLabels>("tr");
+  const [language, setLanguage] = useState<keyof typeof languageLabels>("en");
   const languageText = useMemo(() => languageLabels[language], [language]);
   const languageFlag = useMemo(() => languageFlags[language], [language]);
   const t = useMemo(() => translations[language], [language]);
@@ -132,8 +132,8 @@ export default function Home() {
               </span>
             </h1>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-1 flex-wrap items-center gap-3">
+            <div className="flex flex-1 flex-wrap items-center justify-center gap-2">
               <span
                 className="rounded-full border border-white/15 bg-white/10 px-4 py-1 text-lg"
                 aria-label={languageText}
@@ -142,18 +142,6 @@ export default function Home() {
                 {languageFlag}
               </span>
               <div className="flex items-center rounded-full border border-white/15 bg-white/10 p-1 text-xs font-semibold uppercase tracking-wider">
-                <button
-                  className={`rounded-full px-3 py-1 transition ${
-                    language === "tr"
-                      ? "bg-white text-slate-950"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  type="button"
-                  onClick={() => setLanguage("tr")}
-                  aria-pressed={language === "tr"}
-                >
-                  TR
-                </button>
                 <button
                   className={`rounded-full px-3 py-1 transition ${
                     language === "en"
@@ -165,6 +153,18 @@ export default function Home() {
                   aria-pressed={language === "en"}
                 >
                   EN
+                </button>
+                <button
+                  className={`rounded-full px-3 py-1 transition ${
+                    language === "tr"
+                      ? "bg-white text-slate-950"
+                      : "text-white/60 hover:text-white"
+                  }`}
+                  type="button"
+                  onClick={() => setLanguage("tr")}
+                  aria-pressed={language === "tr"}
+                >
+                  TR
                 </button>
                 <button
                   className={`rounded-full px-3 py-1 transition ${
@@ -193,13 +193,27 @@ export default function Home() {
               </div>
             </div>
             <a
-              className="inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 ring-1 ring-white/20 transition hover:bg-white/20"
+              className="inline-flex items-center gap-2 rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/40 transition hover:bg-blue-400"
               href="https://freshstartx.com"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={t.menu}
+              title={t.menu}
             >
-              {t.menu}
-              <span className="text-cyan-200">→</span>
+              <span>{t.menu}</span>
+              <span className="text-white/90">→</span>
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 6h16M4 12h16M4 18h12" />
+              </svg>
             </a>
           </div>
         </header>
