@@ -132,66 +132,64 @@ export default function Home() {
               </span>
             </h1>
           </div>
-          <div className="flex flex-1 flex-wrap items-center gap-3">
-            <div className="flex flex-1 flex-wrap items-center justify-center gap-2">
-              <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-base font-semibold uppercase tracking-wider sm:text-lg">
-                <button
-                  className={`rounded-full px-3 py-1 transition ${
-                    language === "en"
-                      ? "bg-white text-slate-950"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  type="button"
-                  onClick={() => setLanguage("en")}
-                  aria-pressed={language === "en"}
-                  aria-label={languageLabels.en}
-                  title={languageLabels.en}
-                >
-                  <span aria-hidden="true">{languageFlags.en}</span>
-                </button>
-                <button
-                  className={`rounded-full px-3 py-1 transition ${
-                    language === "tr"
-                      ? "bg-white text-slate-950"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  type="button"
-                  onClick={() => setLanguage("tr")}
-                  aria-pressed={language === "tr"}
-                  aria-label={languageLabels.tr}
-                  title={languageLabels.tr}
-                >
-                  <span aria-hidden="true">{languageFlags.tr}</span>
-                </button>
-                <button
-                  className={`rounded-full px-3 py-1 transition ${
-                    language === "ru"
-                      ? "bg-white text-slate-950"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  type="button"
-                  onClick={() => setLanguage("ru")}
-                  aria-pressed={language === "ru"}
-                  aria-label={languageLabels.ru}
-                  title={languageLabels.ru}
-                >
-                  <span aria-hidden="true">{languageFlags.ru}</span>
-                </button>
-                <button
-                  className={`rounded-full px-3 py-1 transition ${
-                    language === "de"
-                      ? "bg-white text-slate-950"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  type="button"
-                  onClick={() => setLanguage("de")}
-                  aria-pressed={language === "de"}
-                  aria-label={languageLabels.de}
-                  title={languageLabels.de}
-                >
-                  <span aria-hidden="true">{languageFlags.de}</span>
-                </button>
-              </div>
+          <div className="flex flex-nowrap items-center gap-3">
+            <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-base font-semibold uppercase tracking-wider sm:text-lg">
+              <button
+                className={`rounded-full px-3 py-1 transition ${
+                  language === "en"
+                    ? "bg-white text-slate-950"
+                    : "text-white/60 hover:text-white"
+                }`}
+                type="button"
+                onClick={() => setLanguage("en")}
+                aria-pressed={language === "en"}
+                aria-label={languageLabels.en}
+                title={languageLabels.en}
+              >
+                <span aria-hidden="true">{languageFlags.en}</span>
+              </button>
+              <button
+                className={`rounded-full px-3 py-1 transition ${
+                  language === "tr"
+                    ? "bg-white text-slate-950"
+                    : "text-white/60 hover:text-white"
+                }`}
+                type="button"
+                onClick={() => setLanguage("tr")}
+                aria-pressed={language === "tr"}
+                aria-label={languageLabels.tr}
+                title={languageLabels.tr}
+              >
+                <span aria-hidden="true">{languageFlags.tr}</span>
+              </button>
+              <button
+                className={`rounded-full px-3 py-1 transition ${
+                  language === "ru"
+                    ? "bg-white text-slate-950"
+                    : "text-white/60 hover:text-white"
+                }`}
+                type="button"
+                onClick={() => setLanguage("ru")}
+                aria-pressed={language === "ru"}
+                aria-label={languageLabels.ru}
+                title={languageLabels.ru}
+              >
+                <span aria-hidden="true">{languageFlags.ru}</span>
+              </button>
+              <button
+                className={`rounded-full px-3 py-1 transition ${
+                  language === "de"
+                    ? "bg-white text-slate-950"
+                    : "text-white/60 hover:text-white"
+                }`}
+                type="button"
+                onClick={() => setLanguage("de")}
+                aria-pressed={language === "de"}
+                aria-label={languageLabels.de}
+                title={languageLabels.de}
+              >
+                <span aria-hidden="true">{languageFlags.de}</span>
+              </button>
             </div>
             <a
               className="inline-flex items-center gap-2 rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/40 transition hover:bg-blue-400"
