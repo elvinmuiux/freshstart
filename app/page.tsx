@@ -134,14 +134,7 @@ export default function Home() {
           </div>
           <div className="flex flex-1 flex-wrap items-center gap-3">
             <div className="flex flex-1 flex-wrap items-center justify-center gap-2">
-              <span
-                className="rounded-full border border-white/15 bg-white/10 px-4 py-1 text-lg"
-                aria-label={languageText}
-                title={languageText}
-              >
-                {languageFlag}
-              </span>
-              <div className="flex items-center rounded-full border border-white/15 bg-white/10 p-1 text-xs font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-base font-semibold uppercase tracking-wider sm:text-lg">
                 <button
                   className={`rounded-full px-3 py-1 transition ${
                     language === "en"
@@ -151,8 +144,10 @@ export default function Home() {
                   type="button"
                   onClick={() => setLanguage("en")}
                   aria-pressed={language === "en"}
+                  aria-label={languageLabels.en}
+                  title={languageLabels.en}
                 >
-                  EN
+                  <span aria-hidden="true">{languageFlags.en}</span>
                 </button>
                 <button
                   className={`rounded-full px-3 py-1 transition ${
@@ -163,8 +158,10 @@ export default function Home() {
                   type="button"
                   onClick={() => setLanguage("tr")}
                   aria-pressed={language === "tr"}
+                  aria-label={languageLabels.tr}
+                  title={languageLabels.tr}
                 >
-                  TR
+                  <span aria-hidden="true">{languageFlags.tr}</span>
                 </button>
                 <button
                   className={`rounded-full px-3 py-1 transition ${
@@ -175,8 +172,10 @@ export default function Home() {
                   type="button"
                   onClick={() => setLanguage("ru")}
                   aria-pressed={language === "ru"}
+                  aria-label={languageLabels.ru}
+                  title={languageLabels.ru}
                 >
-                  RU
+                  <span aria-hidden="true">{languageFlags.ru}</span>
                 </button>
                 <button
                   className={`rounded-full px-3 py-1 transition ${
@@ -187,8 +186,10 @@ export default function Home() {
                   type="button"
                   onClick={() => setLanguage("de")}
                   aria-pressed={language === "de"}
+                  aria-label={languageLabels.de}
+                  title={languageLabels.de}
                 >
-                  DE
+                  <span aria-hidden="true">{languageFlags.de}</span>
                 </button>
               </div>
             </div>
