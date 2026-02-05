@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useLanguage } from "./hooks/useLanguage";
 import AboutSection from "./components/AboutSection";
 import DeliverySection from "./components/DeliverySection";
 
@@ -22,6 +23,8 @@ const languageFlags = {
 const translations = {
   tr: {
     premiumExperience: "Hoş geldiniz",
+    heroTitle: "Taze ve ev yapımı lezzetler",
+    heroBody: "Menü bölümlerini keşfedin ve en sevdiğiniz lezzeti seçin.",
     menu: "Menü",
     language: "Dil",
     aboutTitle: "Fresh Start hakkında",
@@ -42,6 +45,8 @@ const translations = {
   },
   en: {
     premiumExperience: "Welcome",
+    heroTitle: "Fresh & homemade flavors",
+    heroBody: "Explore the menu sections and pick your favorite taste.",
     menu: "Menu",
     language: "Language",
     aboutTitle: "About Fresh Start",
@@ -62,6 +67,8 @@ const translations = {
   },
   ru: {
     premiumExperience: "Добро пожаловать",
+    heroTitle: "Свежие и домашние вкусы",
+    heroBody: "Откройте разделы меню и выберите любимый вкус.",
     menu: "Меню",
     language: "Язык",
     aboutTitle: "О Fresh Start",
@@ -82,6 +89,8 @@ const translations = {
   },
   de: {
     premiumExperience: "Willkommen",
+    heroTitle: "Frische & hausgemachte Aromen",
+    heroBody: "Entdecke die Menükategorien und wähle deinen Favoriten.",
     menu: "Menü",
     language: "Sprache",
     aboutTitle: "Über Fresh Start",
@@ -103,39 +112,33 @@ const translations = {
 };
 
 export default function Home() {
-  const [language, setLanguage] = useState<keyof typeof languageLabels>("en");
-  const languageText = useMemo(() => languageLabels[language], [language]);
-  const languageFlag = useMemo(() => languageFlags[language], [language]);
+  const [language, setLanguage] = useLanguage();
   const t = useMemo(() => translations[language], [language]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-900 text-white">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.35),_transparent_55%),radial-gradient(circle_at_bottom,_rgba(236,72,153,0.35),_transparent_60%)]" />
-      <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-cyan-400/30 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-fuchsia-400/30 blur-3xl" />
-
-      <main className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 pb-12 pt-8">
-        <header className="flex flex-wrap items-center justify-between gap-6">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200/80">
-              {t.premiumExperience}
-            </p>
-            <h1 className="flex items-center gap-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-              Fresh Start
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white">
+    <div className="relative min-h-screen overflow-hidden bg-[#0c1113] text-white">
+      <main className="relative mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8">
+        <header className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10">
                 <img
                   src="/kurye/kurye.png"
                   alt="Kurye"
-                  className="h-8 w-8 object-contain"
+                  className="h-7 w-7 object-contain"
                   loading="lazy"
                 />
               </span>
-            </h1>
-          </div>
-          <div className="flex flex-nowrap items-center gap-3">
-            <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-base font-semibold uppercase tracking-wider sm:text-lg">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
+                  {t.premiumExperience}
+                </p>
+                <h1 className="text-2xl font-semibold">Fresh Start</h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wider">
               <button
-                className={`rounded-full px-3 py-1 transition ${
+                className={`rounded-full px-2 py-1 transition ${
                   language === "en"
                     ? "bg-white text-slate-950"
                     : "text-white/60 hover:text-white"
@@ -149,7 +152,7 @@ export default function Home() {
                 <span aria-hidden="true">{languageFlags.en}</span>
               </button>
               <button
-                className={`rounded-full px-3 py-1 transition ${
+                className={`rounded-full px-2 py-1 transition ${
                   language === "tr"
                     ? "bg-white text-slate-950"
                     : "text-white/60 hover:text-white"
@@ -163,7 +166,7 @@ export default function Home() {
                 <span aria-hidden="true">{languageFlags.tr}</span>
               </button>
               <button
-                className={`rounded-full px-3 py-1 transition ${
+                className={`rounded-full px-2 py-1 transition ${
                   language === "ru"
                     ? "bg-white text-slate-950"
                     : "text-white/60 hover:text-white"
@@ -177,7 +180,7 @@ export default function Home() {
                 <span aria-hidden="true">{languageFlags.ru}</span>
               </button>
               <button
-                className={`rounded-full px-3 py-1 transition ${
+                className={`rounded-full px-2 py-1 transition ${
                   language === "de"
                     ? "bg-white text-slate-950"
                     : "text-white/60 hover:text-white"
@@ -191,40 +194,43 @@ export default function Home() {
                 <span aria-hidden="true">{languageFlags.de}</span>
               </button>
             </div>
-            <a
-              className="inline-flex items-center gap-2 rounded-full bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/40 transition hover:bg-blue-400"
-              href="https://freshstartx.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={t.menu}
-              title={t.menu}
-            >
-              <span>{t.menu}</span>
-              <span className="text-white/90">→</span>
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M4 6h16M4 12h16M4 18h12" />
-              </svg>
-            </a>
           </div>
         </header>
 
-        <section className="grid gap-0 md:grid-cols-[1.2fr_1fr]">
-          <div className="transform -translate-y-5">
-            <AboutSection t={t} />
+        <section className="space-y-4">
+          <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60">
+            <img
+              src="/menu/hero.png"
+              alt={t.menu}
+              className="absolute inset-0 h-full w-full object-cover opacity-35"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+            <div className="relative space-y-3 p-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
+                {t.premiumExperience}
+              </p>
+              <h2 className="text-xl font-semibold">{t.heroTitle}</h2>
+              <p className="text-[11px] text-slate-200/75">{t.heroBody}</p>
+              <a
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white/90 transition hover:bg-white/20"
+                href="/menu"
+                aria-label={t.menu}
+                title={t.menu}
+              >
+                <span>{t.menu}</span>
+                <span className="text-white/90">→</span>
+              </a>
+            </div>
           </div>
+        </section>
+
+        <section className="space-y-4">
+          <AboutSection t={t} />
           <DeliverySection t={t} />
         </section>
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-sm text-slate-200/80 -translate-y-6">
+        <footer className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-xs text-slate-200/80">
           <span>© {new Date().getFullYear()} Fresh Start</span>
           <span>{t.footerLocation}</span>
           <span className="flex flex-wrap items-center gap-2 text-slate-300/80">
