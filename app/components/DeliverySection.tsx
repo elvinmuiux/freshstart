@@ -5,6 +5,11 @@ type DeliverySectionTranslations = {
   whatsapp: string;
   instagram: string;
   phone: string;
+  locationLabel: string;
+  fastDelivery: string;
+  fastOrderFor: string;
+  latestContentFor: string;
+  directCallFor: string;
 };
 
 type DeliverySectionProps = {
@@ -46,7 +51,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-emerald-200/90">Konum</p>
+                  <p className="text-xs font-semibold text-emerald-200/90">{t.locationLabel}</p>
                   <p className="text-[11px] text-slate-200/70 leading-tight">Antalya, Kundu</p>
                 </div>
               </a>
@@ -71,7 +76,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] text-slate-200/70 leading-tight">Hızlı teslimat</p>
+                  <p className="text-[11px] text-slate-200/70 leading-tight">{t.fastDelivery}</p>
                 </div>
               </a>
             </div>
@@ -127,7 +132,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-white">{t.whatsapp}</p>
-                <p className="text-xs text-emerald-200/70">Hızlı sipariş için</p>
+                <p className="text-xs text-emerald-200/70">{t.fastOrderFor}</p>
               </div>
               <div className="flex-shrink-0">
                 <svg
@@ -178,7 +183,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-white">{t.instagram}</p>
-                <p className="text-xs text-fuchsia-200/70">Güncel içerikler için</p>
+                <p className="text-xs text-fuchsia-200/70">{t.latestContentFor}</p>
               </div>
               <div className="flex-shrink-0">
                 <svg
@@ -224,7 +229,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
               </div>
               <div className="flex-1">
                 <p className="font-semibold text-white">{t.phone}</p>
-                <p className="text-xs text-sky-200/70">Direkt arama için</p>
+                <p className="text-xs text-sky-200/70">{t.directCallFor}</p>
               </div>
               <div className="flex-shrink-0">
                 <svg

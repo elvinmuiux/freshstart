@@ -39,9 +39,15 @@ const translations = {
     whatsapp: "WhatsApp",
     instagram: "Instagram",
     phone: "Telefon",
+    locationLabel: "Konum",
+    fastDelivery: "Hızlı teslimat",
+    fastOrderFor: "Hızlı sipariş için",
+    latestContentFor: "Güncel içerikler için",
+    directCallFor: "Direkt arama için",
     footerLocation: "Antalya · Taze & ev yapımı lezzetler",
     footerRights: "Tüm hakları",
     footerBy: "tarafından korumaktadır",
+    footerMadeWith: "Antalya'da ❤️ ile yapıldı",
   },
   en: {
     premiumExperience: "Welcome",
@@ -61,9 +67,15 @@ const translations = {
     whatsapp: "WhatsApp",
     instagram: "Instagram",
     phone: "Phone",
+    locationLabel: "Location",
+    fastDelivery: "Fast delivery",
+    fastOrderFor: "For fast order",
+    latestContentFor: "For latest content",
+    directCallFor: "For direct call",
     footerLocation: "Antalya · Fresh & homemade flavors",
     footerRights: "All rights reserved by",
     footerBy: "",
+    footerMadeWith: "Made with ❤️ in Antalya",
   },
   ru: {
     premiumExperience: "Добро пожаловать",
@@ -83,9 +95,15 @@ const translations = {
     whatsapp: "WhatsApp",
     instagram: "Instagram",
     phone: "Телефон",
+    locationLabel: "Местоположение",
+    fastDelivery: "Быстрая доставка",
+    fastOrderFor: "Для быстрого заказа",
+    latestContentFor: "Для актуального контента",
+    directCallFor: "Для прямого звонка",
     footerLocation: "Анталья · Свежие и домашние вкусы",
     footerRights: "Все права защищены компанией",
     footerBy: "",
+    footerMadeWith: "Сделано с ❤️ в Анталье",
   },
   de: {
     premiumExperience: "Willkommen",
@@ -105,9 +123,15 @@ const translations = {
     whatsapp: "WhatsApp",
     instagram: "Instagram",
     phone: "Telefon",
+    locationLabel: "Standort",
+    fastDelivery: "Schnelle Lieferung",
+    fastOrderFor: "Für schnelle Bestellung",
+    latestContentFor: "Für aktuelle Inhalte",
+    directCallFor: "Für direkten Anruf",
     footerLocation: "Antalya · Frische & hausgemachte Aromen",
     footerRights: "Alle Rechte vorbehalten von",
     footerBy: "",
+    footerMadeWith: "Mit ❤️ in Antalya gemacht",
   },
 };
 
@@ -197,7 +221,7 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="space-y-4">
+        <section className="-mt-4 space-y-4">
           <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60">
             <img
               src="/menu/hero.png"
@@ -228,26 +252,42 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="space-y-4">
+        <section className="-mt-2 space-y-4">
           <AboutSection t={t} />
           <DeliverySection t={t} />
         </section>
 
-        <footer className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-xs text-slate-200/80">
-          <span>© {new Date().getFullYear()} Fresh Start</span>
-          <span>{t.footerLocation}</span>
-          <span className="flex flex-wrap items-center gap-2 text-slate-300/80">
-            {t.footerRights}
-            <a
-              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90 transition hover:bg-white/20"
-              href="https://descube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              descube
-            </a>
-            {t.footerBy}
-          </span>
+        <footer className="relative overflow-hidden rounded-[24px] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-transparent px-6 py-5 shadow-xl shadow-emerald-500/10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-emerald-400/10 via-transparent to-transparent" />
+          <div className="relative flex flex-col gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-emerald-200/90">
+                  © {new Date().getFullYear()} Fresh Start
+                </p>
+                <p className="text-[11px] text-slate-200/70">{t.footerLocation}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-px bg-gradient-to-b from-transparent via-emerald-400/30 to-transparent" />
+                <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-200/80">
+                  <span>{t.footerRights}</span>
+                  <a
+                    className="group inline-flex items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-100 transition-all hover:border-emerald-400/50 hover:bg-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5"
+                    href="https://descube.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="relative z-10">descube</span>
+                  </a>
+                  <span>{t.footerBy}</span>
+                </div>
+              </div>
+            </div>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent" />
+            <p className="text-center text-[10px] text-slate-300/60">
+              {t.footerMadeWith}
+            </p>
+          </div>
         </footer>
       </main>
     </div>
