@@ -13,6 +13,15 @@ type CustomMenuItem = {
   image: string;
 };
 
+type PendingMenuItem = {
+  tempId: string;
+  sectionSlug: string;
+  name: Partial<Record<LanguageKey, string>>;
+  description: Partial<Record<LanguageKey, string>>;
+  price: string;
+  image: string;
+};
+
 const adminLanguages: LanguageKey[] = ["tr"];
 
 const normalizeLocalizedInput = (
@@ -87,6 +96,7 @@ const uploadImageIfNeeded = async (imageValue: string) => {
 
 export default function AdminAddPage() {
   const [items, setItems] = useState<CustomMenuItem[]>([]);
+  const [pendingItems, setPendingItems] = useState<PendingMenuItem[]>([]);
   const [sectionSlug, setSectionSlug] = useState("kahvalti");
   const [name, setName] = useState<Partial<Record<LanguageKey, string>>>({});
   const [description, setDescription] = useState<
@@ -96,6 +106,7 @@ export default function AdminAddPage() {
   const [image, setImage] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
@@ -107,36 +118,72 @@ export default function AdminAddPage() {
     return menuSections.find((section) => section.slug === sectionSlug)?.image;
   }, [sectionSlug]);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFormError(null);
-    setFormSuccess(null);
-    setIsSubmitting(true);
+  const buildPayload = async () => {
     const normalizedName = normalizeLocalizedInput(name);
     const normalizedDescription = normalizeLocalizedInput(description);
     const hasName = adminLanguages.some((lang) => !!normalizedName[lang]);
     if (!hasName || !price.trim()) {
       setFormError("Yemek adı ve fiyat alanları zorunludur.");
-      setIsSubmitting(false);
-      return;
+      return null;
     }
+    const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
+    const resolvedImage =
+      (await uploadImageIfNeeded(image.trim())) ||
+      sectionImage ||
+      "/menu/hero.png";
+    return {
+      sectionSlug,
+      name: normalizedName,
+      description: normalizedDescription,
+      price: formattedPrice.trim(),
+      image: resolvedImage,
+    };
+  };
+
+  const submitNewItem = async (payload: {
+    sectionSlug: string;
+    name: Partial<Record<LanguageKey, string>>;
+    description: Partial<Record<LanguageKey, string>>;
+    price: string;
+    image: string;
+  }) => {
+    const response = await fetch("/api/menu-items", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data =
+      (await parseResponse<{ item?: CustomMenuItem; error?: string }>(
+        response
+      )) || {};
+    if (!response.ok || !data.item) {
+      throw new Error(
+        !response.ok
+          ? getErrorMessage(data)
+          : "Ekleme başarısız oldu. Lütfen tekrar deneyin."
+      );
+    }
+    return data.item;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError(null);
+    setFormSuccess(null);
+    setIsSubmitting(true);
     try {
-      const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
-      const resolvedImage =
-        (await uploadImageIfNeeded(image.trim())) ||
-        sectionImage ||
-        "/menu/hero.png";
+      const payload = await buildPayload();
+      if (!payload) {
+        setIsSubmitting(false);
+        return;
+      }
       if (editingId) {
         const response = await fetch("/api/menu-items", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: editingId,
-            sectionSlug,
-            name: normalizedName,
-            description: normalizedDescription,
-            price: formattedPrice.trim(),
-            image: resolvedImage,
+            ...payload,
           }),
         });
         const data =
@@ -159,34 +206,9 @@ export default function AdminAddPage() {
           return;
         }
       } else {
-        const response = await fetch("/api/menu-items", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sectionSlug,
-            name: normalizedName,
-            description: normalizedDescription,
-            price: formattedPrice.trim(),
-            image: resolvedImage,
-          }),
-        });
-        const data =
-          (await parseResponse<{ item?: CustomMenuItem; error?: string }>(
-            response
-          )) || {};
-        if (!response.ok) {
-          setFormError(getErrorMessage(data));
-          setIsSubmitting(false);
-          return;
-        }
-        if (data.item) {
-          setItems((prev) => [data.item!, ...prev]);
-          setFormSuccess("Menü öğesi eklendi.");
-        } else {
-          setFormError("Ekleme başarısız oldu. Lütfen tekrar deneyin.");
-          setIsSubmitting(false);
-          return;
-        }
+        const item = await submitNewItem(payload);
+        setItems((prev) => [item, ...prev]);
+        setFormSuccess("Menü öğesi eklendi.");
       }
     } catch (error) {
       setFormError(
@@ -203,6 +225,76 @@ export default function AdminAddPage() {
     setImage("");
     setEditingId(null);
     setIsSubmitting(false);
+  };
+
+  const handleQueueAdd = async () => {
+    if (editingId) {
+      setFormError("Düzenleme modunda sıra ekleyemezsiniz.");
+      return;
+    }
+    setFormError(null);
+    setFormSuccess(null);
+    setIsSubmitting(true);
+    try {
+      const payload = await buildPayload();
+      if (!payload) {
+        setIsSubmitting(false);
+        return;
+      }
+      setPendingItems((prev) => [
+        {
+          tempId: crypto.randomUUID(),
+          ...payload,
+        },
+        ...prev,
+      ]);
+      setFormSuccess("Ürün sıraya eklendi.");
+      setName({});
+      setDescription({});
+      setPrice("");
+      setImage("");
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Bir hata oluştu. Lütfen tekrar deneyin."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBulkSubmit = async () => {
+    if (pendingItems.length === 0) {
+      return;
+    }
+    setFormError(null);
+    setFormSuccess(null);
+    setIsBulkSubmitting(true);
+    try {
+      const created: CustomMenuItem[] = [];
+      for (const pending of pendingItems) {
+        const item = await submitNewItem({
+          sectionSlug: pending.sectionSlug,
+          name: pending.name,
+          description: pending.description,
+          price: pending.price,
+          image: pending.image,
+        });
+        created.push(item);
+      }
+      setItems((prev) => [...created, ...prev]);
+      setPendingItems([]);
+      setFormSuccess("Tüm ürünler eklendi.");
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Toplu ekleme sırasında hata oluştu."
+      );
+    } finally {
+      setIsBulkSubmitting(false);
+    }
   };
 
   const handleRemove = async (id: string) => {
@@ -437,7 +529,70 @@ export default function AdminAddPage() {
           >
             {isSubmitting ? "Gönderiliyor..." : editingId ? "Kaydet" : "Ekle"}
           </button>
+          {!editingId && (
+            <button
+              type="button"
+              onClick={handleQueueAdd}
+              disabled={isSubmitting}
+              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              Sıraya ekle
+            </button>
+          )}
         </form>
+        {pendingItems.length > 0 && (
+          <section className="space-y-3 rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
+                Sıradaki ürünler ({pendingItems.length})
+              </p>
+              <button
+                type="button"
+                onClick={handleBulkSubmit}
+                disabled={isBulkSubmitting}
+                className="rounded-full bg-emerald-500 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isBulkSubmitting ? "Ekleniyor..." : "Hepsini Ekle"}
+              </button>
+            </div>
+            <div className="space-y-2">
+              {pendingItems.map((item) => (
+                <div
+                  key={item.tempId}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
+                >
+                  <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                    <img
+                      src={item.image}
+                      alt={getFirstAvailable(item.name, "Menu")}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">
+                      {getFirstAvailable(item.name, "—")}
+                    </p>
+                    <p className="text-[11px] text-slate-200/70">
+                      {item.price} · {item.sectionSlug}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPendingItems((prev) =>
+                        prev.filter((entry) => entry.tempId !== item.tempId)
+                      )
+                    }
+                    className="text-[11px] font-semibold text-rose-200/80"
+                  >
+                    Kaldır
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="space-y-3">
           <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">

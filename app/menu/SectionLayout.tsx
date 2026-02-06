@@ -81,7 +81,28 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   const [customItems, setCustomItems] = useState<CustomMenuItem[]>([]);
 
   useEffect(() => {
-    fetchItems().then(setCustomItems);
+    let isActive = true;
+    const refresh = () => {
+      fetchItems().then((items) => {
+        if (isActive) {
+          setCustomItems(items);
+        }
+      });
+    };
+    refresh();
+    const handleFocus = () => refresh();
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        refresh();
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      isActive = false;
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   const mergedItems = useMemo(() => {
