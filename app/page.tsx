@@ -218,7 +218,7 @@ export default function Home() {
                 aria-label={t.menu}
                 title={t.menu}
                 style={{
-                  background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(52, 211, 153, 0.35) 20%, rgba(16, 185, 129, 0.4) 40%, rgba(52, 211, 153, 0.35) 60%, rgba(16, 185, 129, 0.3) 80%, rgba(52, 211, 153, 0.25) 100%)',
+                  background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(34, 211, 238, 0.3) 16.66%, rgba(52, 211, 153, 0.35) 33.33%, rgba(20, 184, 166, 0.3) 50%, rgba(16, 185, 129, 0.4) 66.66%, rgba(34, 211, 238, 0.3) 83.33%, rgba(52, 211, 153, 0.25) 100%)',
                 }}
               >
                 <span className="relative z-10">{t.menu}</span>
