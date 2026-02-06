@@ -50,6 +50,18 @@ const fetchItems = async () => {
   return Array.isArray(data.items) ? data.items : [];
 };
 
+const getErrorMessage = async (response: Response) => {
+  try {
+    const data = (await response.json()) as { error?: string };
+    if (data?.error) {
+      return data.error;
+    }
+  } catch (error) {
+    // ignore parse errors
+  }
+  return "Bir hata oluştu. Lütfen tekrar deneyin.";
+};
+
 const uploadImageIfNeeded = async (imageValue: string) => {
   if (!imageValue.startsWith("data:image")) {
     return imageValue;
@@ -60,10 +72,13 @@ const uploadImageIfNeeded = async (imageValue: string) => {
     body: JSON.stringify({ dataUrl: imageValue }),
   });
   if (!response.ok) {
-    return imageValue;
+    throw new Error(await getErrorMessage(response));
   }
   const data = (await response.json()) as { url?: string };
-  return data.url || imageValue;
+  if (!data.url) {
+    throw new Error("Resim yüklenemedi. Lütfen tekrar deneyin.");
+  }
+  return data.url;
 };
 
 export default function AdminAddPage() {
@@ -76,6 +91,9 @@ export default function AdminAddPage() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetchItems().then(setItems);
@@ -87,62 +105,94 @@ export default function AdminAddPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFormError(null);
+    setFormSuccess(null);
+    setIsSubmitting(true);
     const normalizedName = normalizeLocalizedInput(name);
     const normalizedDescription = normalizeLocalizedInput(description);
     const hasName = adminLanguages.some((lang) => !!normalizedName[lang]);
     if (!hasName || !price.trim()) {
+      setFormError("Yemek adı ve fiyat alanları zorunludur.");
+      setIsSubmitting(false);
       return;
     }
-    const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
-    const resolvedImage =
-      (await uploadImageIfNeeded(image.trim())) ||
-      sectionImage ||
-      "/menu/hero.png";
-    if (editingId) {
-      const response = await fetch("/api/menu-items", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: editingId,
-          sectionSlug,
-          name: normalizedName,
-          description: normalizedDescription,
-          price: formattedPrice.trim(),
-          image: resolvedImage,
-        }),
-      });
-      if (response.ok) {
+    try {
+      const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
+      const resolvedImage =
+        (await uploadImageIfNeeded(image.trim())) ||
+        sectionImage ||
+        "/menu/hero.png";
+      if (editingId) {
+        const response = await fetch("/api/menu-items", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: editingId,
+            sectionSlug,
+            name: normalizedName,
+            description: normalizedDescription,
+            price: formattedPrice.trim(),
+            image: resolvedImage,
+          }),
+        });
+        if (!response.ok) {
+          setFormError(await getErrorMessage(response));
+          setIsSubmitting(false);
+          return;
+        }
         const data = (await response.json()) as { item?: CustomMenuItem };
         if (data.item) {
           setItems((prev) =>
             prev.map((item) => (item.id === editingId ? data.item! : item))
           );
+          setFormSuccess("Menü öğesi güncellendi.");
+        } else {
+          setFormError("Güncelleme başarısız oldu. Lütfen tekrar deneyin.");
+          setIsSubmitting(false);
+          return;
         }
-      }
-    } else {
-      const response = await fetch("/api/menu-items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sectionSlug,
-          name: normalizedName,
-          description: normalizedDescription,
-          price: formattedPrice.trim(),
-          image: resolvedImage,
-        }),
-      });
-      if (response.ok) {
+      } else {
+        const response = await fetch("/api/menu-items", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sectionSlug,
+            name: normalizedName,
+            description: normalizedDescription,
+            price: formattedPrice.trim(),
+            image: resolvedImage,
+          }),
+        });
+        if (!response.ok) {
+          setFormError(await getErrorMessage(response));
+          setIsSubmitting(false);
+          return;
+        }
         const data = (await response.json()) as { item?: CustomMenuItem };
         if (data.item) {
           setItems((prev) => [data.item!, ...prev]);
+          setFormSuccess("Menü öğesi eklendi.");
+        } else {
+          setFormError("Ekleme başarısız oldu. Lütfen tekrar deneyin.");
+          setIsSubmitting(false);
+          return;
         }
       }
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Bir hata oluştu. Lütfen tekrar deneyin."
+      );
+      setIsSubmitting(false);
+      return;
     }
     setName({});
     setDescription({});
     setPrice("");
     setImage("");
     setEditingId(null);
+    setIsSubmitting(false);
   };
 
   const handleRemove = async (id: string) => {
@@ -201,8 +251,17 @@ export default function AdminAddPage() {
       if (typeof reader.result === "string") {
         const preview = reader.result;
         setImage(preview);
-        const uploadedUrl = await uploadImageIfNeeded(preview);
-        setImage(uploadedUrl);
+        setFormError(null);
+        try {
+          const uploadedUrl = await uploadImageIfNeeded(preview);
+          setImage(uploadedUrl);
+        } catch (error) {
+          setFormError(
+            error instanceof Error
+              ? error.message
+              : "Resim yüklenemedi. Lütfen tekrar deneyin."
+          );
+        }
       }
     };
     reader.readAsDataURL(file);
@@ -234,6 +293,16 @@ export default function AdminAddPage() {
           onSubmit={handleSubmit}
           className="space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40"
         >
+          {formError && (
+            <div className="rounded-2xl border border-rose-200/30 bg-rose-200/10 px-3 py-2 text-[11px] text-rose-100">
+              {formError}
+            </div>
+          )}
+          {formSuccess && (
+            <div className="rounded-2xl border border-emerald-200/30 bg-emerald-200/10 px-3 py-2 text-[11px] text-emerald-100">
+              {formSuccess}
+            </div>
+          )}
           {editingId && (
             <div className="rounded-2xl border border-amber-200/30 bg-amber-200/10 px-3 py-2 text-[11px] text-amber-100">
               Düzenleme modunda.
@@ -353,9 +422,10 @@ export default function AdminAddPage() {
 
           <button
             type="submit"
-            className="w-full rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/40 transition hover:bg-emerald-400"
+            disabled={isSubmitting}
+            className="w-full rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/40 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {editingId ? "Kaydet" : "Ekle"}
+            {isSubmitting ? "Gönderiliyor..." : editingId ? "Kaydet" : "Ekle"}
           </button>
         </form>
 
