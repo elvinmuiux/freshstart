@@ -213,13 +213,16 @@ export default function Home() {
               <h2 className="text-xl font-semibold">{t.heroTitle}</h2>
               <p className="text-[11px] text-slate-200/75">{t.heroBody}</p>
               <a
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white/90 transition hover:bg-white/20"
+                className="group relative inline-flex items-center gap-2 rounded-full border border-emerald-400/40 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-emerald-100 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 overflow-hidden animate-gradient animate-border-glow shimmer-effect"
                 href="/menu"
                 aria-label={t.menu}
                 title={t.menu}
+                style={{
+                  background: 'linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(52, 211, 153, 0.35) 20%, rgba(16, 185, 129, 0.4) 40%, rgba(52, 211, 153, 0.35) 60%, rgba(16, 185, 129, 0.3) 80%, rgba(52, 211, 153, 0.25) 100%)',
+                }}
               >
-                <span>{t.menu}</span>
-                <span className="text-white/90">→</span>
+                <span className="relative z-10">{t.menu}</span>
+                <span className="relative z-10 text-emerald-200 transition-transform group-hover:translate-x-1">→</span>
               </a>
             </div>
           </div>

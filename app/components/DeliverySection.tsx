@@ -19,55 +19,76 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-400/10 via-transparent to-transparent" />
         <div className="relative flex items-center gap-4">
           <div className="flex-shrink-0 self-center">
-            <div className="relative flex flex-col items-center gap-3">
+            <div className="relative flex flex-col gap-4">
               <a
                 href="https://maps.app.goo.gl/75gPMBxt7wVTRN5z8?g_st=aw"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative block cursor-pointer transition-transform hover:scale-105"
+                className="group relative flex items-center gap-3 cursor-pointer transition-transform hover:scale-105"
                 aria-label="Google Maps'te konumu aç"
                 title="Google Maps'te konumu aç"
               >
-                <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl transition-all group-hover:bg-emerald-400/30" />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm transition-all group-hover:border-emerald-400/50">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-8 w-8 text-emerald-300 transition-colors group-hover:text-emerald-200"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl transition-all group-hover:bg-emerald-400/30" />
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm transition-all group-hover:border-emerald-400/50">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-8 w-8 text-emerald-300 transition-colors group-hover:text-emerald-200"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-emerald-200/90">Konum</p>
+                  <p className="text-[11px] text-slate-200/70 leading-tight">Antalya, Kundu</p>
                 </div>
               </a>
-              <div className="relative">
-                <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl" />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm overflow-hidden">
-                  <img
-                    src="/kurye/kurye.png"
-                    alt="Kurye"
-                    className="h-full w-full object-contain p-1"
-                    loading="lazy"
-                  />
+              <a
+                href="https://wa.me/905468783146"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex items-center gap-3 cursor-pointer transition-transform hover:scale-105"
+                aria-label="WhatsApp ile iletişim"
+                title="WhatsApp ile iletişim"
+              >
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl transition-all group-hover:bg-emerald-400/30" />
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm overflow-hidden transition-all group-hover:border-emerald-400/50">
+                    <img
+                      src="/kurye/kurye.png"
+                      alt="Kurye"
+                      className="h-full w-full object-contain p-1 brightness-0 invert transition-opacity group-hover:opacity-90"
+                      loading="lazy"
+                      style={{ filter: 'brightness(0) invert(1)' }}
+                    />
+                  </div>
                 </div>
-              </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-slate-200/70 leading-tight">Hızlı teslimat</p>
+                </div>
+              </a>
             </div>
           </div>
           <div className="flex-1 space-y-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="h-1 w-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300" />
-                <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-emerald-300/90">
-                  Paket Servisi
-                </p>
+            <div className="space-y-2">
+              <div className="flex flex-col items-start gap-2">
+                <div className="relative">
+                  <div className="absolute inset-0 h-2 w-12 rounded-full bg-emerald-500/30 blur-sm" />
+                  <div className="relative h-2 w-12 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-200" />
+                </div>
+                <div className="flex flex-col items-start gap-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-200">
+                    {t.deliveryTitle}
+                  </span>
+                </div>
               </div>
-              <h3 className="text-2xl font-extrabold bg-gradient-to-r from-white via-emerald-50 to-emerald-200 bg-clip-text text-transparent">
-                {t.deliveryTitle}
-              </h3>
             </div>
             <p className="text-sm leading-relaxed text-slate-200/80">
               {t.deliveryBody}
