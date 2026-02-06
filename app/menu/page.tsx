@@ -235,6 +235,10 @@ export default function MenuPage() {
                     alt={t.sectionImageAlt(section.title)}
                     className="h-full w-full object-cover"
                     loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/menu/hero.png';
+                    }}
                   />
                 </div>
                 <div className="flex-1">

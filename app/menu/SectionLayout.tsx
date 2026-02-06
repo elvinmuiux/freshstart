@@ -147,6 +147,10 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                   alt={`${localized.title} görseli`}
                   className="h-full w-full object-cover"
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/menu/hero.png';
+                  }}
                 />
               </div>
               <div>
@@ -180,10 +184,16 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                 >
                   <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
                     <img
-                      src={item.image}
+                      src={item.image || '/menu/hero.png'}
                       alt={getText(item.name, "Ürün")}
                       className="h-full w-full object-cover"
                       loading="lazy"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        if (target.src !== '/menu/hero.png') {
+                          target.src = '/menu/hero.png';
+                        }
+                      }}
                     />
                   </div>
                   <div className="flex-1">
