@@ -21,7 +21,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
           <div className="flex-shrink-0 self-center">
             <div className="relative flex flex-col items-center gap-3">
               <a
-                href="https://g.page/r/CaMT2VLiUZpIEBE/review"
+                href="https://maps.app.goo.gl/75gPMBxt7wVTRN5z8?g_st=aw"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative block cursor-pointer transition-transform hover:scale-105"
