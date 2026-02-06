@@ -1,8 +1,27 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import { getLocalizedSection, menuSections } from "./sections";
+import type { LanguageKey } from "../lib/language";
+
+type CustomMenuItem = {
+  id: string;
+  sectionSlug: string;
+  name: Partial<Record<LanguageKey, string>>;
+  description: Partial<Record<LanguageKey, string>>;
+  price: string;
+  image: string;
+};
+
+const fetchItems = async () => {
+  const response = await fetch("/api/menu-items", { cache: "no-store" });
+  if (!response.ok) {
+    return [];
+  }
+  const data = (await response.json()) as { items?: CustomMenuItem[] };
+  return Array.isArray(data.items) ? data.items : [];
+};
 
 const languageLabels = {
   en: "English",
@@ -32,6 +51,8 @@ const translations = {
     imageAlt: "Menü görseli",
     sectionImageAlt: (title: string) => `${title} örnek görseli`,
     back: "Geri",
+    sectionItems: "Bölüm ürünleri",
+    emptySection: "Henüz eklenen ürün yok.",
   },
   en: {
     menu: "Menu",
@@ -46,6 +67,8 @@ const translations = {
     imageAlt: "Menu visual",
     sectionImageAlt: (title: string) => `${title} sample visual`,
     back: "Back",
+    sectionItems: "Section items",
+    emptySection: "No items added yet.",
   },
   ru: {
     menu: "Меню",
@@ -60,6 +83,8 @@ const translations = {
     imageAlt: "Изображение меню",
     sectionImageAlt: (title: string) => `Пример: ${title}`,
     back: "Назад",
+    sectionItems: "Блюда раздела",
+    emptySection: "Добавленных блюд пока нет.",
   },
   de: {
     menu: "Menü",
@@ -74,12 +99,15 @@ const translations = {
     imageAlt: "Menübild",
     sectionImageAlt: (title: string) => `Beispiel: ${title}`,
     back: "Zurück",
+    sectionItems: "Bereichsgerichte",
+    emptySection: "Noch keine Einträge hinzugefügt.",
   },
 };
 
 export default function MenuPage() {
   const [language, setLanguage] = useLanguage();
   const t = translations[language];
+  const [customItems, setCustomItems] = useState<CustomMenuItem[]>([]);
   const localizedSections = useMemo(
     () =>
       menuSections.map((section) => ({
@@ -88,6 +116,26 @@ export default function MenuPage() {
       })),
     [language]
   );
+  const itemsBySection = useMemo(
+    () =>
+      customItems.reduce<Record<string, CustomMenuItem[]>>((acc, item) => {
+        if (!acc[item.sectionSlug]) {
+          acc[item.sectionSlug] = [];
+        }
+        acc[item.sectionSlug].push(item);
+        return acc;
+      }, {}),
+    [customItems]
+  );
+
+  const getText = (
+    field: Partial<Record<LanguageKey, string>>,
+    fallback: string
+  ) => field[language] || field.tr || fallback;
+
+  useEffect(() => {
+    fetchItems().then(setCustomItems);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0c1113] text-white">
@@ -195,30 +243,74 @@ export default function MenuPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            {localizedSections.map((section) => (
-              <a
-                key={section.slug}
-                href={`/menu/${section.slug}`}
-                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 shadow-lg shadow-black/40"
-              >
-                <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                  <img
-                    src={section.image}
-                    alt={t.sectionImageAlt(section.title)}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
+          <div className="space-y-4">
+            {localizedSections.map((section) => {
+              const extraItems = itemsBySection[section.slug] ?? [];
+              const mergedItems = [...section.items, ...extraItems];
+              return (
+                <div
+                  key={section.slug}
+                  className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-lg shadow-black/40"
+                >
+                  <a
+                    href={`/menu/${section.slug}`}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                      <img
+                        src={section.image}
+                        alt={t.sectionImageAlt(section.title)}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{section.title}</p>
+                      <p className="text-[11px] text-slate-200/70">
+                        {section.description}
+                      </p>
+                    </div>
+                    <span className="text-sm text-emerald-200/80">→</span>
+                  </a>
+                  <div className="mt-4 space-y-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-200/70">
+                      {t.sectionItems}
+                    </p>
+                    {mergedItems.length === 0 && (
+                      <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-[11px] text-slate-200/70">
+                        {t.emptySection}
+                      </div>
+                    )}
+                    {mergedItems.map((item) => (
+                      <div
+                        key={`${section.slug}-${getText(item.name, "item")}-${item.price}`}
+                        className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+                      >
+                        <div className="h-12 w-12 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+                          <img
+                            src={item.image}
+                            alt={getText(item.name, "Ürün")}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">
+                            {getText(item.name, "Ürün")}
+                          </p>
+                          <p className="text-[11px] text-slate-200/70">
+                            {getText(item.description, "")}
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-emerald-200/30 bg-emerald-200/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                          {item.price}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold">{section.title}</p>
-                  <p className="text-[11px] text-slate-200/70">
-                    {section.description}
-                  </p>
-                </div>
-                <span className="text-sm text-emerald-200/80">→</span>
-              </a>
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>

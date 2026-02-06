@@ -50,14 +50,17 @@ const fetchItems = async () => {
   return Array.isArray(data.items) ? data.items : [];
 };
 
-const getErrorMessage = async (response: Response) => {
+const parseResponse = async <T,>(response: Response): Promise<T | null> => {
   try {
-    const data = (await response.json()) as { error?: string };
-    if (data?.error) {
-      return data.error;
-    }
+    return (await response.json()) as T;
   } catch (error) {
-    // ignore parse errors
+    return null;
+  }
+};
+
+const getErrorMessage = (data: { error?: string } | null) => {
+  if (data?.error) {
+    return data.error;
   }
   return "Bir hata oluştu. Lütfen tekrar deneyin.";
 };
@@ -66,15 +69,16 @@ const uploadImageIfNeeded = async (imageValue: string) => {
   if (!imageValue.startsWith("data:image")) {
     return imageValue;
   }
-  const response = await fetch("/api/uploads", {
+    const response = await fetch("/api/uploads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ dataUrl: imageValue }),
   });
-  if (!response.ok) {
-    throw new Error(await getErrorMessage(response));
+    const data =
+      (await parseResponse<{ url?: string; error?: string }>(response)) || {};
+    if (!response.ok) {
+      throw new Error(getErrorMessage(data));
   }
-  const data = (await response.json()) as { url?: string };
   if (!data.url) {
     throw new Error("Resim yüklenemedi. Lütfen tekrar deneyin.");
   }
@@ -135,12 +139,15 @@ export default function AdminAddPage() {
             image: resolvedImage,
           }),
         });
+        const data =
+          (await parseResponse<{ item?: CustomMenuItem; error?: string }>(
+            response
+          )) || {};
         if (!response.ok) {
-          setFormError(await getErrorMessage(response));
+          setFormError(getErrorMessage(data));
           setIsSubmitting(false);
           return;
         }
-        const data = (await response.json()) as { item?: CustomMenuItem };
         if (data.item) {
           setItems((prev) =>
             prev.map((item) => (item.id === editingId ? data.item! : item))
@@ -163,12 +170,15 @@ export default function AdminAddPage() {
             image: resolvedImage,
           }),
         });
+        const data =
+          (await parseResponse<{ item?: CustomMenuItem; error?: string }>(
+            response
+          )) || {};
         if (!response.ok) {
-          setFormError(await getErrorMessage(response));
+          setFormError(getErrorMessage(data));
           setIsSubmitting(false);
           return;
         }
-        const data = (await response.json()) as { item?: CustomMenuItem };
         if (data.item) {
           setItems((prev) => [data.item!, ...prev]);
           setFormSuccess("Menü öğesi eklendi.");

@@ -20,7 +20,12 @@ const extensionFromMime = (mimeType: string) => {
 
 export async function POST(request: Request) {
   try {
-    const supabaseAdmin = getSupabaseAdmin();
+    let supabaseAdmin = null;
+    try {
+      supabaseAdmin = getSupabaseAdmin();
+    } catch (error) {
+      supabaseAdmin = null;
+    }
     const body = (await request.json()) as { dataUrl?: string };
     if (!body.dataUrl) {
       return NextResponse.json(
@@ -35,6 +40,10 @@ export async function POST(request: Request) {
         { error: "Invalid data URL." },
         { status: 400 }
       );
+    }
+
+    if (!supabaseAdmin) {
+      return NextResponse.json({ url: body.dataUrl }, { status: 200 });
     }
 
     const extension = extensionFromMime(parsed.mimeType);

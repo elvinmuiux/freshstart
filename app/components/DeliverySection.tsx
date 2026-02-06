@@ -13,34 +13,42 @@ type DeliverySectionProps = {
 
 export default function DeliverySection({ t }: DeliverySectionProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/10 p-6 shadow-2xl shadow-cyan-500/20 backdrop-blur">
-      <div className="space-y-1">
-        <div className="flex items-center gap-3">
-          <p className="text-lg font-semibold">{t.deliveryTitle}</p>
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-cyan-500/15 via-white/5 to-white/10 p-6 shadow-2xl shadow-cyan-500/20 backdrop-blur">
+      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan-400/20 blur-3xl" />
+      <div className="relative space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-200/70">
+              Paket Servisi
+            </p>
+            <p className="text-lg font-semibold text-white">
+              {t.deliveryTitle}
+            </p>
+          </div>
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/20 bg-white/90 shadow-lg shadow-cyan-500/20">
             <img
               src="/kurye/kurye.png"
               alt="Kurye"
-              className="h-12 w-12 object-contain"
+              className="h-9 w-9 object-contain"
               loading="lazy"
             />
           </span>
         </div>
-        <p className="text-sm text-slate-200/80">{t.deliveryBody}</p>
+        <p className="text-sm text-slate-100/80">{t.deliveryBody}</p>
       </div>
-      <div className="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-        <p className="text-sm font-medium text-slate-100/90">
+      <div className="mt-5 space-y-3 rounded-2xl border border-white/10 bg-black/20 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-100/80">
           {t.contactPreference}
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <a
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/15 px-4 py-2 text-sm font-semibold text-emerald-100 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500/25"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/15 px-4 py-2 text-sm font-semibold text-emerald-100 shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 hover:bg-emerald-500/25"
             href="https://wa.me/905468783146"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp ile iletişim"
           >
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/30">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/30 transition group-hover:bg-emerald-500/40">
               <svg
                 viewBox="0 0 24 24"
                 className="h-5 w-5"
@@ -53,14 +61,14 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
             {t.whatsapp}
           </a>
           <a
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-fuchsia-400/30 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:from-pink-500/30 hover:via-purple-500/30 hover:to-indigo-500/30"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-fuchsia-400/30 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:-translate-y-0.5 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-indigo-500/30"
             href="https://instagram.com/freshstartkundu"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
             title="Instagram"
           >
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition group-hover:bg-white/20">
               <svg
                 viewBox="0 0 24 24"
                 className="h-5 w-5"
@@ -79,11 +87,11 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
             {t.instagram}
           </a>
           <a
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-sky-400/40 bg-sky-500/15 px-4 py-2 text-sm font-semibold text-sky-100 shadow-lg shadow-sky-500/20 transition hover:bg-sky-500/25"
+            className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-sky-400/40 bg-sky-500/15 px-4 py-2 text-sm font-semibold text-sky-100 shadow-lg shadow-sky-500/20 transition hover:-translate-y-0.5 hover:bg-sky-500/25"
             href="tel:+905468783146"
             aria-label="Telefonla arama"
           >
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/30">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/30 transition group-hover:bg-sky-500/40">
               <svg
                 viewBox="0 0 24 24"
                 className="h-5 w-5"
