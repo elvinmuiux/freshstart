@@ -121,11 +121,11 @@ export default function Home() {
         <header className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 overflow-hidden">
                 <img
-                  src="/kurye/kurye.png"
-                  alt="Kurye"
-                  className="h-7 w-7 object-contain"
+                  src="/logo/logo.jpeg"
+                  alt="Fresh Start Logo"
+                  className="h-full w-full object-cover rounded-full"
                   loading="lazy"
                 />
               </span>
