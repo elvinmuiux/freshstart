@@ -13,8 +13,6 @@ type CustomMenuItem = {
   image: string;
 };
 
-const STORAGE_KEY = "freshstart.menuItems";
-
 const adminLanguages: LanguageKey[] = ["tr"];
 
 const normalizeLocalizedInput = (
@@ -43,32 +41,29 @@ const getFirstAvailable = (
   return fallback;
 };
 
-const loadItems = () => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
+const fetchItems = async () => {
+  const response = await fetch("/api/menu-items", { cache: "no-store" });
+  if (!response.ok) {
     return [];
   }
-  try {
-    const parsed = JSON.parse(stored) as CustomMenuItem[];
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-    return parsed.map((item) => {
-      const name =
-        typeof item.name === "string" ? { tr: item.name } : item.name || {};
-      const description =
-        typeof item.description === "string"
-          ? { tr: item.description }
-          : item.description || {};
-      return {
-        ...item,
-        name,
-        description,
-      };
-    });
-  } catch {
-    return [];
+  const data = (await response.json()) as { items?: CustomMenuItem[] };
+  return Array.isArray(data.items) ? data.items : [];
+};
+
+const uploadImageIfNeeded = async (imageValue: string) => {
+  if (!imageValue.startsWith("data:image")) {
+    return imageValue;
   }
+  const response = await fetch("/api/uploads", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ dataUrl: imageValue }),
+  });
+  if (!response.ok) {
+    return imageValue;
+  }
+  const data = (await response.json()) as { url?: string };
+  return data.url || imageValue;
 };
 
 export default function AdminAddPage() {
@@ -83,19 +78,14 @@ export default function AdminAddPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
-    setItems(loadItems());
+    fetchItems().then(setItems);
   }, []);
 
   const sectionImage = useMemo(() => {
     return menuSections.find((section) => section.slug === sectionSlug)?.image;
   }, [sectionSlug]);
 
-  const saveItems = (nextItems: CustomMenuItem[]) => {
-    setItems(nextItems);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextItems));
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalizedName = normalizeLocalizedInput(name);
     const normalizedDescription = normalizeLocalizedInput(description);
@@ -104,31 +94,49 @@ export default function AdminAddPage() {
       return;
     }
     const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
+    const resolvedImage =
+      (await uploadImageIfNeeded(image.trim())) ||
+      sectionImage ||
+      "/menu/hero.png";
     if (editingId) {
-      const nextItems = items.map((item) =>
-        item.id === editingId
-          ? {
-              ...item,
-              sectionSlug,
-              name: normalizedName,
-              description: normalizedDescription,
-              price: formattedPrice.trim(),
-              image: image.trim() || sectionImage || "/menu/hero.png",
-            }
-          : item
-      );
-      saveItems(nextItems);
+      const response = await fetch("/api/menu-items", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingId,
+          sectionSlug,
+          name: normalizedName,
+          description: normalizedDescription,
+          price: formattedPrice.trim(),
+          image: resolvedImage,
+        }),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as { item?: CustomMenuItem };
+        if (data.item) {
+          setItems((prev) =>
+            prev.map((item) => (item.id === editingId ? data.item! : item))
+          );
+        }
+      }
     } else {
-      const newItem: CustomMenuItem = {
-        id: `${Date.now()}`,
-        sectionSlug,
-        name: normalizedName,
-        description: normalizedDescription,
-        price: formattedPrice.trim(),
-        image: image.trim() || sectionImage || "/menu/hero.png",
-      };
-      const nextItems = [newItem, ...items];
-      saveItems(nextItems);
+      const response = await fetch("/api/menu-items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sectionSlug,
+          name: normalizedName,
+          description: normalizedDescription,
+          price: formattedPrice.trim(),
+          image: resolvedImage,
+        }),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as { item?: CustomMenuItem };
+        if (data.item) {
+          setItems((prev) => [data.item!, ...prev]);
+        }
+      }
     }
     setName({});
     setDescription({});
@@ -137,18 +145,27 @@ export default function AdminAddPage() {
     setEditingId(null);
   };
 
-  const handleRemove = (id: string) => {
-    const nextItems = items.filter((item) => item.id !== id);
-    saveItems(nextItems);
+  const handleRemove = async (id: string) => {
+    const response = await fetch(`/api/menu-items?id=${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      setItems((prev) => prev.filter((item) => item.id !== id));
+    }
   };
 
-  const handleClearAll = () => {
-    saveItems([]);
-    setEditingId(null);
-    setName({});
-    setDescription({});
-    setPrice("");
-    setImage("");
+  const handleClearAll = async () => {
+    const response = await fetch("/api/menu-items?all=1", {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      setItems([]);
+      setEditingId(null);
+      setName({});
+      setDescription({});
+      setPrice("");
+      setImage("");
+    }
   };
 
   const handleEdit = (item: CustomMenuItem) => {
@@ -172,15 +189,20 @@ export default function AdminAddPage() {
     setImage("");
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       if (typeof reader.result === "string") {
-        setImage(reader.result);
+        const preview = reader.result;
+        setImage(preview);
+        const uploadedUrl = await uploadImageIfNeeded(preview);
+        setImage(uploadedUrl);
       }
     };
     reader.readAsDataURL(file);

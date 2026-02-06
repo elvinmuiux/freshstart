@@ -14,7 +14,14 @@ type CustomMenuItem = {
   image: string;
 };
 
-const STORAGE_KEY = "freshstart.menuItems";
+const fetchItems = async () => {
+  const response = await fetch("/api/menu-items", { cache: "no-store" });
+  if (!response.ok) {
+    return [];
+  }
+  const data = (await response.json()) as { items?: CustomMenuItem[] };
+  return Array.isArray(data.items) ? data.items : [];
+};
 
 const translations = {
   tr: {
@@ -74,17 +81,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   const [customItems, setCustomItems] = useState<CustomMenuItem[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-      setCustomItems([]);
-      return;
-    }
-    try {
-      const parsed = JSON.parse(stored) as CustomMenuItem[];
-      setCustomItems(Array.isArray(parsed) ? parsed : []);
-    } catch {
-      setCustomItems([]);
-    }
+    fetchItems().then(setCustomItems);
   }, []);
 
   const mergedItems = useMemo(() => {
