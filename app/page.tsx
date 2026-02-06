@@ -68,7 +68,7 @@ const translations = {
   ru: {
     premiumExperience: "Добро пожаловать",
     heroTitle: "Свежие и домашние вкусы",
-    heroBody: "Откройте разделы меню и выберите любимый вкус.",
+    heroBody: "Изучите разделы меню и выберите свой любимый вкус.",
     menu: "Меню",
     language: "Язык",
     aboutTitle: "О Fresh Start",
@@ -90,7 +90,7 @@ const translations = {
   de: {
     premiumExperience: "Willkommen",
     heroTitle: "Frische & hausgemachte Aromen",
-    heroBody: "Entdecke die Menükategorien und wähle deinen Favoriten.",
+    heroBody: "Erkunden Sie die Menübereiche und wählen Sie Ihren Lieblingsgeschmack.",
     menu: "Menü",
     language: "Sprache",
     aboutTitle: "Über Fresh Start",
