@@ -24,7 +24,7 @@ const translations = {
   tr: {
     premiumExperience: "Hoş geldiniz",
     heroTitle: "Taze ve ev yapımı lezzetler",
-    heroBody: "Menü bölümlerini keşfedin ve en sevdiğiniz lezzeti seçin.",
+    heroBody: "WhatsApp üzerinden kolayca sipariş verin, hızlı teslimat alın.",
     menu: "Menü",
     language: "Dil",
     aboutTitle: "Fresh Start hakkında",
@@ -46,7 +46,7 @@ const translations = {
   en: {
     premiumExperience: "Welcome",
     heroTitle: "Fresh & homemade flavors",
-    heroBody: "Explore the menu sections and pick your favorite taste.",
+    heroBody: "Order easily via WhatsApp for fast delivery.",
     menu: "Menu",
     language: "Language",
     aboutTitle: "About Fresh Start",
@@ -68,7 +68,7 @@ const translations = {
   ru: {
     premiumExperience: "Добро пожаловать",
     heroTitle: "Свежие и домашние вкусы",
-    heroBody: "Изучите разделы меню и выберите свой любимый вкус.",
+    heroBody: "Заказывайте легко через WhatsApp для быстрой доставки.",
     menu: "Меню",
     language: "Язык",
     aboutTitle: "О Fresh Start",
@@ -90,7 +90,7 @@ const translations = {
   de: {
     premiumExperience: "Willkommen",
     heroTitle: "Frische & hausgemachte Aromen",
-    heroBody: "Erkunden Sie die Menübereiche und wählen Sie Ihren Lieblingsgeschmack.",
+    heroBody: "Bestellen Sie einfach über WhatsApp für schnelle Lieferung.",
     menu: "Menü",
     language: "Sprache",
     aboutTitle: "Über Fresh Start",
