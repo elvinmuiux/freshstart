@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { getSupabaseAdmin } from "../../lib/supabaseAdmin";
 
 const BUCKET_NAME = process.env.SUPABASE_STORAGE_BUCKET || "menu-images";
 
@@ -17,6 +17,7 @@ const extensionFromMime = (mimeType: string) => {
 };
 
 export async function POST(request: Request) {
+  const supabaseAdmin = getSupabaseAdmin();
   const body = (await request.json()) as { dataUrl?: string };
   if (!body.dataUrl) {
     return NextResponse.json(
