@@ -426,6 +426,18 @@ export default function AdminAddPage() {
             Ana sayfa
           </a>
         </header>
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              window.location.href = "/admin/login";
+            }}
+            className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white/90 transition hover:bg-white/20"
+          >
+            Çıkış yap
+          </button>
+        </div>
 
         <form
           onSubmit={handleSubmit}

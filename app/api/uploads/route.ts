@@ -93,11 +93,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    const { data } = supabaseAdmin.storage
-      .from(BUCKET_NAME)
-      .getPublicUrl(fileName);
+    const proxyUrl = `/api/images?path=${encodeURIComponent(fileName)}`;
 
-    return NextResponse.json({ url: data.publicUrl }, { status: 200 });
+    return NextResponse.json({ url: proxyUrl }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: getErrorMessage(error) },
