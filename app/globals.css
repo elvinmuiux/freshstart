@@ -74,11 +74,13 @@ body {
 
 .animate-gradient {
   background-size: 200% 100%;
-  animation: gradient-shift 2s ease infinite;
+  animation: gradient-shift 3s ease infinite;
+  will-change: background-position;
 }
 
 .animate-border-glow {
-  animation: border-glow 2s ease infinite;
+  animation: border-glow 3s ease infinite;
+  will-change: border-color, box-shadow;
 }
 
 .shimmer-effect::before {
@@ -91,14 +93,15 @@ body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(16, 185, 129, 0.4) 20%,
-    rgba(34, 211, 238, 0.4) 40%,
-    rgba(52, 211, 153, 0.4) 60%,
-    rgba(20, 184, 166, 0.4) 80%,
+    rgba(16, 185, 129, 0.3) 20%,
+    rgba(34, 211, 238, 0.3) 40%,
+    rgba(52, 211, 153, 0.3) 60%,
+    rgba(20, 184, 166, 0.3) 80%,
     transparent 100%
   );
   transform: translateX(-100%) translateY(-50%);
-  animation: shimmer 2s infinite;
+  animation: shimmer 3s infinite;
   pointer-events: none;
   z-index: 1;
+  will-change: transform;
 }

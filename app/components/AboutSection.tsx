@@ -65,7 +65,7 @@ export default function AboutSection({ t }: AboutSectionProps) {
               {t.phone}
             </a>
             <a
-              className="group relative inline-flex items-center gap-2 rounded-full border border-emerald-400/40 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-emerald-100 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 overflow-hidden animate-gradient animate-border-glow shimmer-effect"
+              className="group relative inline-flex items-center gap-2 rounded-full border border-emerald-400/40 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-emerald-100 shadow-lg shadow-emerald-500/20 transition-transform hover:-translate-y-0.5 overflow-hidden"
               href="/menu"
               aria-label={t.menu}
               title={t.menu}

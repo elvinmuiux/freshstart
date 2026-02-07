@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { useLanguage } from "./hooks/useLanguage";
 import AboutSection from "./components/AboutSection";
 import DeliverySection from "./components/DeliverySection";
@@ -137,7 +137,9 @@ export default function Home() {
                   src="/logo/logo.jpeg"
                   alt="Fresh Start Logo"
                   className="h-full w-full object-cover rounded-full"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </span>
               <div>
@@ -158,6 +160,8 @@ export default function Home() {
               alt={t.menu}
               className="absolute inset-0 h-full w-full object-cover opacity-35"
               loading="lazy"
+              decoding="async"
+              fetchPriority="low"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
             <div className="relative space-y-3 p-5">
@@ -167,7 +171,7 @@ export default function Home() {
               <h2 className="text-xl font-semibold">{t.heroTitle}</h2>
               <p className="text-[11px] text-slate-200/75">{t.heroBody}</p>
               <a
-                className="group relative inline-flex items-center gap-2 rounded-full border border-emerald-400/40 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-emerald-100 shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 overflow-hidden animate-gradient animate-border-glow shimmer-effect"
+                className="group relative inline-flex items-center gap-2 rounded-full border border-emerald-400/40 px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-emerald-100 shadow-lg shadow-emerald-500/20 transition-transform hover:-translate-y-0.5 overflow-hidden"
                 href="/menu"
                 aria-label={t.menu}
                 title={t.menu}
@@ -213,10 +217,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent" />
-            <p className="text-center text-[10px] text-slate-300/60">
-              {t.footerMadeWith}
-            </p>
           </div>
         </footer>
       </main>

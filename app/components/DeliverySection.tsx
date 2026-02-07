@@ -34,8 +34,8 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
                 title="Google Maps'te konumu aç"
               >
                 <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl transition-all group-hover:bg-emerald-400/30" />
-                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm transition-all group-hover:border-emerald-400/50">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-lg transition-all group-hover:bg-emerald-400/30" />
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 transition-all group-hover:border-emerald-400/50">
                     <svg
                       viewBox="0 0 24 24"
                       className="h-8 w-8 text-emerald-300 transition-colors group-hover:text-emerald-200"
@@ -56,21 +56,22 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
                 </div>
               </a>
               <a
-                href="https://wa.me/905468783146"
+                href="https://wa.me/905468783146?text=Merhaba%21%20Fresh%20Start%20paket%20servisi%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.%20Teslimat%20s%C3%BCresi%2C%20teslimat%20b%C3%B6lgesi%20ve%20minimum%20sipari%C5%9F%20tutar%C4%B1%20hakk%C4%B1nda%20bilgi%20verebilir%20misiniz%3F"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative flex items-center gap-3 cursor-pointer transition-transform hover:scale-105"
-                aria-label="WhatsApp ile iletişim"
-                title="WhatsApp ile iletişim"
+                aria-label="WhatsApp ile paket servis bilgisi al"
+                title="WhatsApp ile paket servis bilgisi al"
               >
                 <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-xl transition-all group-hover:bg-emerald-400/30" />
-                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 backdrop-blur-sm overflow-hidden transition-all group-hover:border-emerald-400/50">
+                  <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-lg transition-all group-hover:bg-emerald-400/30" />
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-500/20 to-emerald-400/10 overflow-hidden transition-all group-hover:border-emerald-400/50">
                     <img
                       src="/kurye/kurye.png"
                       alt="Kurye"
                       className="h-full w-full object-contain p-1 brightness-0 invert transition-opacity group-hover:opacity-90"
                       loading="lazy"
+                      decoding="async"
                       style={{ filter: 'brightness(0) invert(1)' }}
                     />
                   </div>
@@ -85,7 +86,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
             <div className="space-y-2">
               <div className="flex flex-col items-start gap-2">
                 <div className="relative">
-                  <div className="absolute inset-0 h-2 w-12 rounded-full bg-emerald-500/30 blur-sm" />
+                  <div className="absolute inset-0 h-2 w-12 rounded-full bg-emerald-500/30" />
                   <div className="relative h-2 w-12 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-200" />
                 </div>
                 <div className="flex flex-col items-start gap-1.5">

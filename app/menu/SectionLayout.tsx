@@ -33,6 +33,7 @@ const translations = {
     spotlightBody: "Günlük taze ürünlerle hazırlanır.",
     listTitle: "Menü listesi",
     empty: "Henüz eklenen ürün yok.",
+    order: "Sipariş Ver",
   },
   en: {
     menu: "Menu",
@@ -42,6 +43,7 @@ const translations = {
     spotlightBody: "Prepared daily with fresh ingredients.",
     listTitle: "Menu list",
     empty: "No items added yet.",
+    order: "Order",
   },
   ru: {
     menu: "Меню",
@@ -51,6 +53,7 @@ const translations = {
     spotlightBody: "Готовим ежедневно из свежих продуктов.",
     listTitle: "Список меню",
     empty: "Добавленных блюд пока нет.",
+    order: "Заказать",
   },
   de: {
     menu: "Menü",
@@ -60,6 +63,7 @@ const translations = {
     spotlightBody: "Täglich frisch zubereitet.",
     listTitle: "Menüliste",
     empty: "Noch keine Einträge hinzugefügt.",
+    order: "Bestellen",
   },
 };
 
@@ -116,6 +120,17 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
     field: Partial<Record<LanguageKey, string>>,
     fallback: string
   ) => field[language] || field.tr || fallback;
+
+  const createWhatsAppOrderLink = (
+    name: string,
+    description: string,
+    price: string
+  ) => {
+    const whatsappNumber = "905468783146";
+    const message = `Merhaba! ${name} sipariş etmek istiyorum.\n\n${description ? `Açıklama: ${description}\n` : ""}Fiyat: ${price}`;
+    const encodedMessage = encodeURIComponent(message);
+    return `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+  };
 
   return (
     <div className="min-h-screen bg-[#0f1516] text-white">
@@ -177,40 +192,62 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                   {t.empty}
                 </div>
               )}
-              {mergedItems.map((item) => (
-                <div
-                  key={`${getText(item.name, "item")}-${item.price}`}
-                  className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
-                >
-                  <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                    <img
-                      src={item.image || '/menu/hero.png'}
-                      alt={getText(item.name, "Ürün")}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        if (target.src !== '/menu/hero.png') {
-                          target.src = '/menu/hero.png';
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-semibold">
-                        {getText(item.name, "Ürün")}
-                      </p>
-                      <span className="rounded-full border border-emerald-200/30 bg-emerald-200/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
-                        {item.price}
-                      </span>
+              {mergedItems.map((item) => {
+                const itemName = getText(item.name, "Ürün");
+                const itemDescription = getText(item.description, "");
+                const whatsappLink = createWhatsAppOrderLink(
+                  itemName,
+                  itemDescription,
+                  item.price
+                );
+
+                return (
+                  <div
+                    key={`${itemName}-${item.price}`}
+                    className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
+                  >
+                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                      <img
+                        src={item.image || '/menu/hero.png'}
+                        alt={itemName}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (target.src !== '/menu/hero.png') {
+                            target.src = '/menu/hero.png';
+                          }
+                        }}
+                      />
                     </div>
-                    <p className="text-[11px] text-slate-200/70">
-                      {getText(item.description, "")}
-                    </p>
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold">
+                            {itemName}
+                          </p>
+                          <p className="mt-1 text-[11px] text-slate-200/70">
+                            {itemDescription}
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <span className="rounded-full border border-emerald-200/30 bg-emerald-200/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                            {item.price}
+                          </span>
+                          <a
+                            href={whatsappLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center rounded-full border border-emerald-400/40 bg-emerald-500/15 px-3 py-1.5 text-[10px] font-semibold text-emerald-100 shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                          >
+                            {t.order}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
