@@ -9,15 +9,26 @@ import {
 } from "../../lib/menuItemsStore";
 
 const TABLE_NAME = "menu_items";
+
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Unexpected error.";
+
 const getSupabaseAdminSafe = () => {
   try {
     return getSupabaseAdmin();
-  } catch (error) {
+  } catch {
     return null;
   }
 };
+
+const normalizeItem = (item: Record<string, unknown>) => ({
+  id: String(item.id),
+  sectionSlug: String(item.section_slug ?? ""),
+  name: (item.name as Record<string, string>) ?? {},
+  description: (item.description as Record<string, string>) ?? {},
+  price: String(item.price ?? ""),
+  image: String(item.image ?? ""),
+});
 
 type MenuItemInput = {
   sectionSlug: string;
@@ -205,12 +216,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-
-const normalizeItem = (item: Record<string, unknown>) => ({
-  id: String(item.id),
-  sectionSlug: String(item.section_slug ?? ""),
-  name: (item.name as Record<string, string>) ?? {},
-  description: (item.description as Record<string, string>) ?? {},
-  price: String(item.price ?? ""),
-  image: String(item.image ?? ""),
-});

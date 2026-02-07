@@ -72,7 +72,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   }
 
   const [language] = useLanguage();
-  const t = useMemo(() => translations[language], [language]);
+  const t = translations[language];
   const localized = useMemo(
     () => getLocalizedSection(section, language),
     [language, section]
@@ -82,25 +82,21 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
   useEffect(() => {
     let isActive = true;
-    const refresh = () => {
-      fetchItems().then((items) => {
-        if (isActive) {
-          setCustomItems(items);
-        }
-      });
+    const refresh = async () => {
+      const items = await fetchItems();
+      if (isActive) {
+        setCustomItems(items);
+      }
     };
     refresh();
-    const handleFocus = () => refresh();
     const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "visible" && isActive) {
         refresh();
       }
     };
-    window.addEventListener("focus", handleFocus);
     document.addEventListener("visibilitychange", handleVisibility);
     return () => {
       isActive = false;
-      window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);

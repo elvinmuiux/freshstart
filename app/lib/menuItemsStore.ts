@@ -69,16 +69,16 @@ const ensureDataFile = async () => {
 };
 
 const readAll = async (): Promise<StoredMenuItem[]> => {
-  await ensureDataFile();
   const dataFile = await getDataFile();
+  await ensureDataFile();
   const raw = await fs.readFile(dataFile, "utf8");
   const data = JSON.parse(raw);
   return Array.isArray(data) ? (data as StoredMenuItem[]) : [];
 };
 
 const writeAll = async (items: StoredMenuItem[]) => {
-  await ensureDataFile();
   const dataFile = await getDataFile();
+  await ensureDataFile();
   await fs.writeFile(dataFile, JSON.stringify(items, null, 2), "utf8");
 };
 

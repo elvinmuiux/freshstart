@@ -1,41 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import { getLocalizedSection, menuSections } from "./sections";
-import type { LanguageKey } from "../lib/language";
-
-type CustomMenuItem = {
-  id: string;
-  sectionSlug: string;
-  name: Partial<Record<LanguageKey, string>>;
-  description: Partial<Record<LanguageKey, string>>;
-  price: string;
-  image: string;
-};
-
-const fetchItems = async () => {
-  const response = await fetch("/api/menu-items", { cache: "no-store" });
-  if (!response.ok) {
-    return [];
-  }
-  const data = (await response.json()) as { items?: CustomMenuItem[] };
-  return Array.isArray(data.items) ? data.items : [];
-};
-
-const languageLabels = {
-  en: "English",
-  tr: "Türkçe",
-  ru: "Русский",
-  de: "Deutsch",
-};
-
-const languageFlags = {
-  en: "🇬🇧",
-  tr: "🇹🇷",
-  ru: "🇷🇺",
-  de: "🇩🇪",
-};
+import LanguageSelector from "../components/LanguageSelector";
 
 const translations = {
   tr: {
@@ -51,8 +19,6 @@ const translations = {
     imageAlt: "Menü görseli",
     sectionImageAlt: (title: string) => `${title} örnek görseli`,
     back: "Geri",
-    sectionItems: "Bölüm ürünleri",
-    emptySection: "Henüz eklenen ürün yok.",
   },
   en: {
     menu: "Menu",
@@ -67,8 +33,6 @@ const translations = {
     imageAlt: "Menu visual",
     sectionImageAlt: (title: string) => `${title} sample visual`,
     back: "Back",
-    sectionItems: "Section items",
-    emptySection: "No items added yet.",
   },
   ru: {
     menu: "Меню",
@@ -83,8 +47,6 @@ const translations = {
     imageAlt: "Изображение меню",
     sectionImageAlt: (title: string) => `Пример: ${title}`,
     back: "Назад",
-    sectionItems: "Блюда раздела",
-    emptySection: "Добавленных блюд пока нет.",
   },
   de: {
     menu: "Menü",
@@ -99,13 +61,11 @@ const translations = {
     imageAlt: "Menübild",
     sectionImageAlt: (title: string) => `Beispiel: ${title}`,
     back: "Zurück",
-    sectionItems: "Bereichsgerichte",
-    emptySection: "Noch keine Einträge hinzugefügt.",
   },
 };
 
 export default function MenuPage() {
-  const [language, setLanguage] = useLanguage();
+  const [language] = useLanguage();
   const t = translations[language];
   const localizedSections = useMemo(
     () =>
@@ -127,64 +87,7 @@ export default function MenuPage() {
             >
               ← {t.back}
             </a>
-            <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wider">
-              <button
-                className={`rounded-full px-2 py-1 transition ${
-                  language === "en"
-                    ? "bg-white text-slate-950"
-                    : "text-white/60 hover:text-white"
-                }`}
-                type="button"
-                onClick={() => setLanguage("en")}
-                aria-pressed={language === "en"}
-                aria-label={languageLabels.en}
-                title={languageLabels.en}
-              >
-                <span aria-hidden="true">{languageFlags.en}</span>
-              </button>
-              <button
-                className={`rounded-full px-2 py-1 transition ${
-                  language === "tr"
-                    ? "bg-white text-slate-950"
-                    : "text-white/60 hover:text-white"
-                }`}
-                type="button"
-                onClick={() => setLanguage("tr")}
-                aria-pressed={language === "tr"}
-                aria-label={languageLabels.tr}
-                title={languageLabels.tr}
-              >
-                <span aria-hidden="true">{languageFlags.tr}</span>
-              </button>
-              <button
-                className={`rounded-full px-2 py-1 transition ${
-                  language === "ru"
-                    ? "bg-white text-slate-950"
-                    : "text-white/60 hover:text-white"
-                }`}
-                type="button"
-                onClick={() => setLanguage("ru")}
-                aria-pressed={language === "ru"}
-                aria-label={languageLabels.ru}
-                title={languageLabels.ru}
-              >
-                <span aria-hidden="true">{languageFlags.ru}</span>
-              </button>
-              <button
-                className={`rounded-full px-2 py-1 transition ${
-                  language === "de"
-                    ? "bg-white text-slate-950"
-                    : "text-white/60 hover:text-white"
-                }`}
-                type="button"
-                onClick={() => setLanguage("de")}
-                aria-pressed={language === "de"}
-                aria-label={languageLabels.de}
-                title={languageLabels.de}
-              >
-                <span aria-hidden="true">{languageFlags.de}</span>
-              </button>
-            </div>
+            <LanguageSelector />
           </div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
             {t.menu}
