@@ -134,7 +134,7 @@ export default function AdminAddPage() {
     const normalizedDescription = normalizeLocalizedInput(description);
     const hasName = adminLanguages.some((lang) => !!normalizedName[lang]);
     if (!hasName || !price.trim()) {
-      setFormError("Yemek ffffffff adı ve fiyat alanları zorunludur.");
+      setFormError("Yemek adı ve fiyat alanları zorunludur.");
       return null;
     }
     const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
@@ -214,6 +214,13 @@ export default function AdminAddPage() {
             prev.map((item) => (item.id === editingId ? data.item! : item))
           );
           setFormSuccess("Menü öğesi güncellendi.");
+          setName({});
+          setDescription({});
+          setPrice("");
+          setImage("");
+          setSortOrder("0");
+          setEditingId(null);
+          setIsSubmitting(false);
         } else {
           setFormError("Güncelleme başarısız oldu. Lütfen tekrar deneyin.");
           setIsSubmitting(false);

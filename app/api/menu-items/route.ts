@@ -45,6 +45,7 @@ type MenuItemInput = {
 export async function GET() {
   try {
     const supabaseAdmin = requireSupabase();
+    // Limitsiz erişim için limit belirtilmedi
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
       .select("*")
