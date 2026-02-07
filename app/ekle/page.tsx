@@ -134,7 +134,7 @@ export default function AdminAddPage() {
     const normalizedDescription = normalizeLocalizedInput(description);
     const hasName = adminLanguages.some((lang) => !!normalizedName[lang]);
     if (!hasName || !price.trim()) {
-      setFormError("Yemek adı ve fiyat alanları zorunludur.");
+      setFormError("Yemek ffffffff adı ve fiyat alanları zorunludur.");
       return null;
     }
     const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
