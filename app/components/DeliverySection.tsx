@@ -102,150 +102,83 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
         </div>
       </div>
 
-      {/* Contact Cards Grid */}
-      <div className="grid gap-3">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-300/60 px-1">
+      {/* Contact Icons Row */}
+      <div className="space-y-3">
+        <p className="text-center text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-300/60">
           {t.contactPreference}
         </p>
-        <div className="grid gap-3">
-          {/* WhatsApp Card */}
+        <div className="flex items-center justify-center gap-4">
+          {/* WhatsApp */}
           <a
-            className="group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-emerald-600/10 p-4 shadow-lg shadow-emerald-500/10 transition-all duration-300 hover:border-emerald-400/50 hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-1"
+            className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-emerald-600/10 shadow-lg shadow-emerald-500/10 transition-all duration-300 hover:border-emerald-400/50 hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-1"
             href="https://wa.me/905468783146"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp ile iletişim"
+            title={t.whatsapp}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/0 via-emerald-400/0 to-emerald-500/0 transition-all duration-300 group-hover:from-emerald-400/10 group-hover:via-emerald-400/5 group-hover:to-emerald-500/10" />
-            <div className="relative flex items-center gap-4">
-              <div className="flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 ring-2 ring-emerald-400/20 transition-all group-hover:ring-emerald-400/40">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6 text-emerald-300"
-                    aria-hidden="true"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2a10 10 0 0 0-8.74 14.88L2 22l5.27-1.38A10 10 0 1 0 12 2zm0 2a8 8 0 0 1 6.93 12.01.98.98 0 0 0-.1.74l.75 2.8-2.9-.76a.98.98 0 0 0-.73.1A8 8 0 1 1 12 4zm4.07 10.17c-.22-.11-1.28-.63-1.48-.7-.2-.08-.35-.11-.5.11-.14.22-.56.7-.68.85-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.75-1.08-.64-.57-1.08-1.29-1.2-1.5-.12-.22-.01-.34.09-.46.09-.09.22-.24.33-.36.11-.12.14-.2.22-.34.07-.14.04-.26-.02-.37-.06-.11-.5-1.2-.7-1.64-.18-.43-.38-.37-.5-.37h-.43c-.15 0-.37.05-.57.26-.19.22-.75.74-.75 1.8s.77 2.09.88 2.23c.11.14 1.52 2.32 3.68 3.26.51.22.92.35 1.23.45.52.16.99.14 1.37.08.42-.06 1.28-.52 1.46-1.02.18-.5.18-.93.13-1.02-.05-.09-.2-.14-.42-.25z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white">{t.whatsapp}</p>
-                <p className="text-xs text-emerald-200/70">{t.fastOrderFor}</p>
-              </div>
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-emerald-300 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-400/0 via-emerald-400/0 to-emerald-500/0 transition-all duration-300 group-hover:from-emerald-400/10 group-hover:via-emerald-400/5 group-hover:to-emerald-500/10" />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 ring-2 ring-emerald-400/20 transition-all group-hover:ring-emerald-400/40">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-7 w-7 text-emerald-300"
+                aria-hidden="true"
+                fill="currentColor"
+              >
+                <path d="M12 2a10 10 0 0 0-8.74 14.88L2 22l5.27-1.38A10 10 0 1 0 12 2zm0 2a8 8 0 0 1 6.93 12.01.98.98 0 0 0-.1.74l.75 2.8-2.9-.76a.98.98 0 0 0-.73.1A8 8 0 1 1 12 4zm4.07 10.17c-.22-.11-1.28-.63-1.48-.7-.2-.08-.35-.11-.5.11-.14.22-.56.7-.68.85-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.75-1.08-.64-.57-1.08-1.29-1.2-1.5-.12-.22-.01-.34.09-.46.09-.09.22-.24.33-.36.11-.12.14-.2.22-.34.07-.14.04-.26-.02-.37-.06-.11-.5-1.2-.7-1.64-.18-.43-.38-.37-.5-.37h-.43c-.15 0-.37.05-.57.26-.19.22-.75.74-.75 1.8s.77 2.09.88 2.23c.11.14 1.52 2.32 3.68 3.26.51.22.92.35 1.23.45.52.16.99.14 1.37.08.42-.06 1.28-.52 1.46-1.02.18-.5.18-.93.13-1.02-.05-.09-.2-.14-.42-.25z" />
+              </svg>
             </div>
           </a>
 
-          {/* Instagram Card */}
+          {/* Phone */}
           <a
-            className="group relative overflow-hidden rounded-2xl border border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/15 via-pink-500/10 to-purple-500/10 p-4 shadow-lg shadow-fuchsia-500/10 transition-all duration-300 hover:border-fuchsia-400/50 hover:shadow-xl hover:shadow-fuchsia-500/20 hover:-translate-y-1"
+            className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 to-blue-500/10 shadow-lg shadow-sky-500/10 transition-all duration-300 hover:border-sky-400/50 hover:shadow-xl hover:shadow-sky-500/20 hover:-translate-y-1"
+            href="tel:+905468783146"
+            aria-label="Telefonla arama"
+            title={t.phone}
+          >
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-sky-400/0 to-blue-400/0 transition-all duration-300 group-hover:from-sky-400/10 group-hover:to-blue-400/10" />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/20 ring-2 ring-sky-400/20 transition-all group-hover:ring-sky-400/40">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-7 w-7 text-sky-300"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.26-1.26a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+            </div>
+          </a>
+
+          {/* Instagram */}
+          <a
+            className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/15 via-pink-500/10 to-purple-500/10 shadow-lg shadow-fuchsia-500/10 transition-all duration-300 hover:border-fuchsia-400/50 hover:shadow-xl hover:shadow-fuchsia-500/20 hover:-translate-y-1"
             href="https://instagram.com/freshstartkundu"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
-            title="Instagram"
+            title={t.instagram}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-400/0 via-pink-400/0 to-purple-400/0 transition-all duration-300 group-hover:from-fuchsia-400/10 group-hover:via-pink-400/5 group-hover:to-purple-400/10" />
-            <div className="relative flex items-center gap-4">
-              <div className="flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-pink-500/20 ring-2 ring-fuchsia-400/20 transition-all group-hover:ring-fuchsia-400/40">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6 text-white"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
-                    <path d="M16 11.37a4 4 0 1 1-7.75 1.76 4 4 0 0 1 7.75-1.76z" />
-                    <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
-                  </svg>
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white">{t.instagram}</p>
-                <p className="text-xs text-fuchsia-200/70">{t.latestContentFor}</p>
-              </div>
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-fuchsia-300 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </div>
-          </a>
-
-          {/* Phone Card */}
-          <a
-            className="group relative overflow-hidden rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 to-blue-500/10 p-4 shadow-lg shadow-sky-500/10 transition-all duration-300 hover:border-sky-400/50 hover:shadow-xl hover:shadow-sky-500/20 hover:-translate-y-1"
-            href="tel:+905468783146"
-            aria-label="Telefonla arama"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-sky-400/0 to-blue-400/0 transition-all duration-300 group-hover:from-sky-400/10 group-hover:to-blue-400/10" />
-            <div className="relative flex items-center gap-4">
-              <div className="flex-shrink-0">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/20 ring-2 ring-sky-400/20 transition-all group-hover:ring-sky-400/40">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6 text-sky-300"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.26-1.26a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                </div>
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-white">{t.phone}</p>
-                <p className="text-xs text-sky-200/70">{t.directCallFor}</p>
-              </div>
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-sky-300 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-fuchsia-400/0 via-pink-400/0 to-purple-400/0 transition-all duration-300 group-hover:from-fuchsia-400/10 group-hover:via-pink-400/5 group-hover:to-purple-400/10" />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-pink-500/20 ring-2 ring-fuchsia-400/20 transition-all group-hover:ring-fuchsia-400/40">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-7 w-7 text-white"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+                <path d="M16 11.37a4 4 0 1 1-7.75 1.76 4 4 0 0 1 7.75-1.76z" />
+                <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+              </svg>
             </div>
           </a>
         </div>
