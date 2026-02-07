@@ -12,6 +12,7 @@ type CustomMenuItem = {
   description: Partial<Record<LanguageKey, string>>;
   price: string;
   image: string;
+  sortOrder?: number;
 };
 
 const fetchItems = async () => {
@@ -105,7 +106,10 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
     const extra = customItems.filter(
       (item) => item.sectionSlug === section.slug
     );
-    return [...section.items, ...extra];
+    const combined = [...section.items, ...extra];
+    return combined.sort(
+      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+    );
   }, [customItems, section.items, section.slug]);
 
   const getText = (

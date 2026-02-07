@@ -9,6 +9,7 @@ export type MenuSection = {
     description: Partial<Record<LanguageKey, string>>;
     price: string;
     image: string;
+    sortOrder?: number;
   }[];
   image: string;
 };

@@ -63,7 +63,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">
+      <body 
+        className="antialiased"
+        data-new-gr-c-s-check-loaded="14.1271.0"
+        data-gr-ext-installed=""
+      >
         {children}
       </body>
     </html>

@@ -11,6 +11,7 @@ type CustomMenuItem = {
   description: Partial<Record<LanguageKey, string>>;
   price: string;
   image: string;
+  sortOrder?: number;
 };
 
 type PendingMenuItem = {
@@ -20,9 +21,10 @@ type PendingMenuItem = {
   description: Partial<Record<LanguageKey, string>>;
   price: string;
   image: string;
+  sortOrder?: number;
 };
 
-const adminLanguages: LanguageKey[] = ["tr"];
+const adminLanguages: LanguageKey[] = ["tr", "en", "ru", "de"];
 
 const normalizeLocalizedInput = (
   input: Partial<Record<LanguageKey, string>>
@@ -53,10 +55,11 @@ const getFirstAvailable = (
 const fetchItems = async () => {
   const response = await fetch("/api/menu-items", { cache: "no-store" });
   if (!response.ok) {
-    return [];
+    const data = (await parseResponse<{ error?: string }>(response)) || {};
+    return { items: [] as CustomMenuItem[], error: data.error };
   }
   const data = (await response.json()) as { items?: CustomMenuItem[] };
-  return Array.isArray(data.items) ? data.items : [];
+  return { items: Array.isArray(data.items) ? data.items : [], error: undefined };
 };
 
 const parseResponse = async <T,>(response: Response): Promise<T | null> => {
@@ -78,15 +81,15 @@ const uploadImageIfNeeded = async (imageValue: string) => {
   if (!imageValue.startsWith("data:image")) {
     return imageValue;
   }
-    const response = await fetch("/api/uploads", {
+  const response = await fetch("/api/uploads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ dataUrl: imageValue }),
   });
-    const data =
-      (await parseResponse<{ url?: string; error?: string }>(response)) || {};
-    if (!response.ok) {
-      throw new Error(getErrorMessage(data));
+  const data =
+    (await parseResponse<{ url?: string; error?: string }>(response)) || {};
+  if (!response.ok) {
+    throw new Error(getErrorMessage(data));
   }
   if (!data.url) {
     throw new Error("Resim yüklenemedi. Lütfen tekrar deneyin.");
@@ -104,14 +107,22 @@ export default function AdminAddPage() {
   >({});
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [sortOrder, setSortOrder] = useState("0");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBulkSubmitting, setIsBulkSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [supabaseWarning, setSupabaseWarning] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchItems().then(setItems);
+    fetchItems().then(({ items, error }) => {
+      setItems(items);
+      if (error) {
+        setSupabaseWarning(error);
+      }
+    });
   }, []);
 
   const sectionImage = useMemo(() => {
@@ -127,6 +138,7 @@ export default function AdminAddPage() {
       return null;
     }
     const formattedPrice = price.includes("₺") ? price : `${price} ₺`;
+    const parsedSortOrder = Number.parseInt(sortOrder || "0", 10);
     const resolvedImage =
       (await uploadImageIfNeeded(image.trim())) ||
       sectionImage ||
@@ -137,6 +149,7 @@ export default function AdminAddPage() {
       description: normalizedDescription,
       price: formattedPrice.trim(),
       image: resolvedImage,
+      sortOrder: Number.isNaN(parsedSortOrder) ? 0 : parsedSortOrder,
     };
   };
 
@@ -146,6 +159,7 @@ export default function AdminAddPage() {
     description: Partial<Record<LanguageKey, string>>;
     price: string;
     image: string;
+    sortOrder?: number;
   }) => {
     const response = await fetch("/api/menu-items", {
       method: "POST",
@@ -223,6 +237,7 @@ export default function AdminAddPage() {
     setDescription({});
     setPrice("");
     setImage("");
+    setSortOrder("0");
     setEditingId(null);
     setIsSubmitting(false);
   };
@@ -253,6 +268,7 @@ export default function AdminAddPage() {
       setDescription({});
       setPrice("");
       setImage("");
+      setSortOrder("0");
     } catch (error) {
       setFormError(
         error instanceof Error
@@ -317,6 +333,7 @@ export default function AdminAddPage() {
       setDescription({});
       setPrice("");
       setImage("");
+      setSortOrder("0");
     }
   };
 
@@ -325,12 +342,19 @@ export default function AdminAddPage() {
     setSectionSlug(item.sectionSlug);
     setName({
       tr: item.name?.tr ?? getFirstAvailable(item.name || {}, ""),
+      en: item.name?.en ?? "",
+      ru: item.name?.ru ?? "",
+      de: item.name?.de ?? "",
     });
     setDescription({
       tr: item.description?.tr ?? getFirstAvailable(item.description || {}, ""),
+      en: item.description?.en ?? "",
+      ru: item.description?.ru ?? "",
+      de: item.description?.de ?? "",
     });
     setPrice(item.price.replace("₺", "").trim());
     setImage(item.image);
+    setSortOrder(String(item.sortOrder ?? 0));
   };
 
   const handleCancelEdit = () => {
@@ -339,6 +363,7 @@ export default function AdminAddPage() {
     setDescription({});
     setPrice("");
     setImage("");
+    setSortOrder("0");
   };
 
   const handleImageUpload = async (
@@ -348,30 +373,41 @@ export default function AdminAddPage() {
     if (!file) {
       return;
     }
-    const reader = new FileReader();
-    reader.onload = async () => {
-      if (typeof reader.result === "string") {
-        const preview = reader.result;
-        setImage(preview);
-        setFormError(null);
-        try {
-          const uploadedUrl = await uploadImageIfNeeded(preview);
-          setImage(uploadedUrl);
-        } catch (error) {
-          setFormError(
-            error instanceof Error
-              ? error.message
-              : "Resim yüklenemedi. Lütfen tekrar deneyin."
-          );
-        }
+    const previewUrl = URL.createObjectURL(file);
+    setImage(previewUrl);
+    setFormError(null);
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/api/uploads", {
+        method: "POST",
+        body: formData,
+      });
+      const data =
+        (await parseResponse<{ url?: string; error?: string }>(response)) || {};
+      if (!response.ok) {
+        throw new Error(getErrorMessage(data));
       }
-    };
-    reader.readAsDataURL(file);
+      if (!data.url) {
+        throw new Error("Resim yüklenemedi. Lütfen tekrar deneyin.");
+      }
+      setImage(data.url);
+      URL.revokeObjectURL(previewUrl);
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Resim yüklenemedi. Lütfen tekrar deneyin."
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#0c1113] text-white">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 pb-12 pt-8">
         <header className="flex items-start justify-between gap-4">
           <div className="space-y-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
@@ -395,6 +431,13 @@ export default function AdminAddPage() {
           onSubmit={handleSubmit}
           className="space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40"
         >
+          {supabaseWarning && (
+            <div className="rounded-2xl border border-amber-200/30 bg-amber-200/10 px-3 py-2 text-[11px] text-amber-100">
+              {supabaseWarning} `.env` içinde `SUPABASE_URL` ve
+              `SUPABASE_SERVICE_ROLE_KEY` değerlerini kontrol edin ve dev
+              sunucuyu yeniden başlatın.
+            </div>
+          )}
           {formError && (
             <div className="rounded-2xl border border-rose-200/30 bg-rose-200/10 px-3 py-2 text-[11px] text-rose-100">
               {formError}
@@ -446,11 +489,60 @@ export default function AdminAddPage() {
                 value={name.tr || ""}
                 onChange={(event) =>
                   setName({
+                    ...name,
                     tr: event.target.value,
                   })
                 }
                 className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
                 placeholder="Örn: Granola Bowl"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                English
+              </span>
+              <input
+                value={name.en || ""}
+                onChange={(event) =>
+                  setName({
+                    ...name,
+                    en: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="e.g. Granola Bowl"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                Русский
+              </span>
+              <input
+                value={name.ru || ""}
+                onChange={(event) =>
+                  setName({
+                    ...name,
+                    ru: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="Напр: Granola Bowl"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                Deutsch
+              </span>
+              <input
+                value={name.de || ""}
+                onChange={(event) =>
+                  setName({
+                    ...name,
+                    de: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="z.B. Granola Bowl"
               />
             </div>
           </div>
@@ -467,11 +559,60 @@ export default function AdminAddPage() {
                 value={description.tr || ""}
                 onChange={(event) =>
                   setDescription({
+                    ...description,
                     tr: event.target.value,
                   })
                 }
                 className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
                 placeholder="Kısa açıklama"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                English
+              </span>
+              <input
+                value={description.en || ""}
+                onChange={(event) =>
+                  setDescription({
+                    ...description,
+                    en: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="Short description"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                Русский
+              </span>
+              <input
+                value={description.ru || ""}
+                onChange={(event) =>
+                  setDescription({
+                    ...description,
+                    ru: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="Короткое описание"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/60">
+                Deutsch
+              </span>
+              <input
+                value={description.de || ""}
+                onChange={(event) =>
+                  setDescription({
+                    ...description,
+                    de: event.target.value,
+                  })
+                }
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+                placeholder="Kurze Beschreibung"
               />
             </div>
           </div>
@@ -501,6 +642,18 @@ export default function AdminAddPage() {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <label className="text-[11px] font-semibold uppercase tracking-[0.3em] text-emerald-200/70">
+              Sıralama (0 = varsayılan)
+            </label>
+            <input
+              value={sortOrder}
+              onChange={(event) => setSortOrder(event.target.value)}
+              className="w-full rounded-2xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white"
+              placeholder="0"
+            />
+          </div>
+
           <div className="flex items-center gap-3">
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2 text-xs font-semibold text-white/90">
               <input
@@ -524,16 +677,20 @@ export default function AdminAddPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploading}
             className="w-full rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/40 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isSubmitting ? "Gönderiliyor..." : editingId ? "Kaydet" : "Ekle"}
+            {isSubmitting || isUploading
+              ? "Gönderiliyor..."
+              : editingId
+                ? "Kaydet"
+                : "Ekle"}
           </button>
           {!editingId && (
             <button
               type="button"
               onClick={handleQueueAdd}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
             >
               Sıraya ekle
@@ -574,7 +731,7 @@ export default function AdminAddPage() {
                       {getFirstAvailable(item.name, "—")}
                     </p>
                     <p className="text-[11px] text-slate-200/70">
-                      {item.price} · {item.sectionSlug}
+                      {item.price} · {item.sectionSlug} · {item.sortOrder ?? 0}
                     </p>
                   </div>
                   <button
@@ -630,7 +787,7 @@ export default function AdminAddPage() {
                     {getFirstAvailable(item.name, "—")}
                 </p>
                 <p className="text-[11px] text-slate-200/70">
-                  {item.price} ·{" "}
+                  {item.price} · {item.sortOrder ?? 0} ·{" "}
                     {getFirstAvailable(item.description, "Açıklama yok")}
                 </p>
               </div>

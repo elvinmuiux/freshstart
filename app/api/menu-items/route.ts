@@ -1,13 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../lib/supabaseAdmin";
-import {
-  addMenuItem,
-  clearMenuItems,
-  deleteMenuItem,
-  listMenuItems,
-  updateMenuItem,
-} from "../../lib/menuItemsStore";
-
 const TABLE_NAME = "menu_items";
 
 const getErrorMessage = (error: unknown) =>
@@ -21,6 +13,16 @@ const getSupabaseAdminSafe = () => {
   }
 };
 
+const requireSupabase = () => {
+  const client = getSupabaseAdminSafe();
+  if (!client) {
+    throw new Error(
+      "Supabase yapılandırması eksik. Kalıcı menü kaydı için SUPABASE_URL ve SUPABASE_SERVICE_ROLE_KEY gereklidir."
+    );
+  }
+  return client;
+};
+
 const normalizeItem = (item: Record<string, unknown>) => ({
   id: String(item.id),
   sectionSlug: String(item.section_slug ?? ""),
@@ -28,6 +30,7 @@ const normalizeItem = (item: Record<string, unknown>) => ({
   description: (item.description as Record<string, string>) ?? {},
   price: String(item.price ?? ""),
   image: String(item.image ?? ""),
+  sortOrder: Number(item.sort_order ?? 0),
 });
 
 type MenuItemInput = {
@@ -36,18 +39,16 @@ type MenuItemInput = {
   description: Record<string, string>;
   price: string;
   image: string;
+  sortOrder?: number;
 };
 
 export async function GET() {
   try {
-    const supabaseAdmin = getSupabaseAdminSafe();
-    if (!supabaseAdmin) {
-      const items = await listMenuItems();
-      return NextResponse.json({ items }, { status: 200 });
-    }
+    const supabaseAdmin = requireSupabase();
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
       .select("*")
+      .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -68,7 +69,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const supabaseAdmin = getSupabaseAdminSafe();
+    const supabaseAdmin = requireSupabase();
     const body = (await request.json()) as Partial<MenuItemInput>;
     if (!body.sectionSlug || !body.price || !body.name) {
       return NextResponse.json(
@@ -83,19 +84,8 @@ export async function POST(request: Request) {
       description: body.description ?? {},
       price: body.price,
       image: body.image ?? "",
+      sort_order: Number.isFinite(body.sortOrder) ? body.sortOrder : 0,
     };
-
-    if (!supabaseAdmin) {
-      const item = await addMenuItem({
-        sectionSlug: payload.section_slug,
-        name: payload.name,
-        description: payload.description,
-        price: payload.price,
-        image: payload.image,
-        created_at: new Date().toISOString(),
-      });
-      return NextResponse.json({ item }, { status: 200 });
-    }
 
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
@@ -118,7 +108,7 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const supabaseAdmin = getSupabaseAdminSafe();
+    const supabaseAdmin = requireSupabase();
     const body = (await request.json()) as Partial<MenuItemInput> & {
       id?: string;
     };
@@ -132,21 +122,8 @@ export async function PUT(request: Request) {
       description: body.description,
       price: body.price,
       image: body.image,
+      sort_order: Number.isFinite(body.sortOrder) ? body.sortOrder : 0,
     };
-
-    if (!supabaseAdmin) {
-      const item = await updateMenuItem(body.id, {
-        sectionSlug: payload.section_slug,
-        name: payload.name,
-        description: payload.description,
-        price: payload.price,
-        image: payload.image,
-      });
-      if (!item) {
-        return NextResponse.json({ error: "Item not found." }, { status: 404 });
-      }
-      return NextResponse.json({ item }, { status: 200 });
-    }
 
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
@@ -170,16 +147,12 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const supabaseAdmin = getSupabaseAdminSafe();
+    const supabaseAdmin = requireSupabase();
     const url = new URL(request.url);
     const id = url.searchParams.get("id");
     const clearAll = url.searchParams.get("all");
 
     if (clearAll === "1") {
-      if (!supabaseAdmin) {
-        await clearMenuItems();
-        return NextResponse.json({ ok: true }, { status: 200 });
-      }
       const { error } = await supabaseAdmin
         .from(TABLE_NAME)
         .delete()
@@ -192,14 +165,6 @@ export async function DELETE(request: Request) {
 
     if (!id) {
       return NextResponse.json({ error: "Missing id." }, { status: 400 });
-    }
-
-    if (!supabaseAdmin) {
-      const removed = await deleteMenuItem(id);
-      if (!removed) {
-        return NextResponse.json({ error: "Item not found." }, { status: 404 });
-      }
-      return NextResponse.json({ ok: true }, { status: 200 });
     }
 
     const { error } = await supabaseAdmin.from(TABLE_NAME).delete().eq("id", id);
