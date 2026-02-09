@@ -29,7 +29,7 @@ const translations = {
     menu: "Menü",
     back: "Menü",
     spotlight: "Günün önerisi",
-    spotlightSuffix: "seçkisi",
+    spotlightSuffix: "seçenekleri",
     spotlightBody: "Günlük taze ürünlerle hazırlanır.",
     listTitle: "Menü listesi",
     empty: "Henüz eklenen ürün yok.",

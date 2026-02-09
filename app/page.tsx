@@ -35,6 +35,8 @@ const translations = {
     footerRights: "Tüm hakları",
     footerBy: "tarafından korumaktadır",
     footerMadeWith: "Antalya'da ❤️ ile yapıldı",
+    whatsappMessage: "Merhaba! Fresh Start Ekibi\n\nSipariş vermek istiyorum.",
+    whatsappDeliveryMessage: "Merhaba! Fresh Start Ekibi\n\nPaket servis ile sipariş vermek istiyorum.",
   },
   en: {
     premiumExperience: "Welcome",
@@ -63,6 +65,8 @@ const translations = {
     footerRights: "All rights reserved by",
     footerBy: "",
     footerMadeWith: "Made with ❤️ in Antalya",
+    whatsappMessage: "Hello! Fresh Start Team\n\nI would like to place an order.",
+    whatsappDeliveryMessage: "Hello! Fresh Start Team\n\nI would like to order for delivery.",
   },
   ru: {
     premiumExperience: "Добро пожаловать",
@@ -91,6 +95,8 @@ const translations = {
     footerRights: "Все права защищены компанией",
     footerBy: "",
     footerMadeWith: "Сделано с ❤️ в Анталье",
+    whatsappMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы сделать заказ.",
+    whatsappDeliveryMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы заказать доставку.",
   },
   de: {
     premiumExperience: "Willkommen",
@@ -119,6 +125,8 @@ const translations = {
     footerRights: "Alle Rechte vorbehalten von",
     footerBy: "",
     footerMadeWith: "Mit ❤️ in Antalya gemacht",
+    whatsappMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Bestellung aufgeben.",
+    whatsappDeliveryMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Lieferung bestellen.",
   },
 };
 
@@ -187,8 +195,8 @@ export default function Home() {
         </section>
 
         <section className="-mt-2 space-y-4">
-          <AboutSection t={t} />
-          <DeliverySection t={t} />
+          <AboutSection t={t} language={language} />
+          <DeliverySection t={t} language={language} />
         </section>
 
         <footer className="relative overflow-hidden rounded-[24px] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-transparent px-6 py-5 shadow-xl shadow-emerald-500/10">

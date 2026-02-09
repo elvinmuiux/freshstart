@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { menuSections } from "../menu/sections";
 import { languages, type LanguageKey } from "../lib/language";
 
@@ -115,6 +115,9 @@ export default function AdminAddPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [supabaseWarning, setSupabaseWarning] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     fetchItems().then(({ items, error }) => {
@@ -320,13 +323,27 @@ export default function AdminAddPage() {
     }
   };
 
-  const handleRemove = async (id: string) => {
-    const response = await fetch(`/api/menu-items?id=${id}`, {
+  const handleRemoveClick = (id: string) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleRemoveConfirm = async () => {
+    if (!deleteConfirmId) return;
+    
+    const response = await fetch(`/api/menu-items?id=${deleteConfirmId}`, {
       method: "DELETE",
     });
     if (response.ok) {
-      setItems((prev) => prev.filter((item) => item.id !== id));
+      setItems((prev) => prev.filter((item) => item.id !== deleteConfirmId));
+      setFormSuccess("Menü öğesi silindi.");
+    } else {
+      setFormError("Silme işlemi başarısız oldu.");
     }
+    setDeleteConfirmId(null);
+  };
+
+  const handleRemoveCancel = () => {
+    setDeleteConfirmId(null);
   };
 
   const handleClearAll = async () => {
@@ -362,6 +379,14 @@ export default function AdminAddPage() {
     setPrice(item.price.replace("₺", "").trim());
     setImage(item.image);
     setSortOrder(String(item.sortOrder ?? 0));
+    
+    // Forma scroll yap
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ 
+        behavior: "smooth", 
+        block: "start" 
+      });
+    }, 100);
   };
 
   const handleCancelEdit = () => {
@@ -372,6 +397,65 @@ export default function AdminAddPage() {
     setImage("");
     setSortOrder("0");
   };
+
+  // Arama fonksiyonu - öğeleri filtrele
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return items;
+    }
+    
+    const query = searchQuery.toLowerCase().trim();
+    return items.filter((item) => {
+      // İsimde ara (tüm dillerde)
+      const nameMatch = Object.values(item.name || {}).some((name) =>
+        name?.toLowerCase().includes(query)
+      );
+      
+      // Açıklamada ara (tüm dillerde)
+      const descMatch = Object.values(item.description || {}).some((desc) =>
+        desc?.toLowerCase().includes(query)
+      );
+      
+      // Fiyatta ara
+      const priceMatch = item.price.toLowerCase().includes(query);
+      
+      // Bölüm adında ara
+      const section = menuSections.find((s) => s.slug === item.sectionSlug);
+      const sectionMatch = section?.title.toLowerCase().includes(query);
+      
+      return nameMatch || descMatch || priceMatch || sectionMatch;
+    });
+  }, [items, searchQuery]);
+
+  // Menü öğelerini bölümlere göre gruplandır
+  const itemsBySection = useMemo(() => {
+    const grouped: Record<string, CustomMenuItem[]> = {};
+    
+    // Tüm bölümleri başlat
+    menuSections.forEach((section) => {
+      grouped[section.slug] = [];
+    });
+    
+    // Filtrelenmiş öğeleri bölümlere göre grupla
+    filteredItems.forEach((item) => {
+      if (grouped[item.sectionSlug]) {
+        grouped[item.sectionSlug].push(item);
+      } else {
+        // Eğer bölüm tanımlı değilse, "diğer" bölümüne ekle
+        if (!grouped["other"]) {
+          grouped["other"] = [];
+        }
+        grouped["other"].push(item);
+      }
+    });
+    
+    // Her bölümdeki öğeleri sortOrder'a göre sırala
+    Object.keys(grouped).forEach((slug) => {
+      grouped[slug].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    });
+    
+    return grouped;
+  }, [filteredItems]);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -447,6 +531,7 @@ export default function AdminAddPage() {
         </div>
 
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           className="space-y-4 rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40"
         >
@@ -770,64 +855,297 @@ export default function AdminAddPage() {
           </section>
         )}
 
-        <section className="space-y-3">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
-            Son eklenenler
-          </p>
-          {items.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="w-full rounded-2xl border border-rose-200/30 bg-rose-200/10 px-4 py-2 text-[11px] font-semibold text-rose-200/90"
-            >
-              Tüm eklenenleri sil
-            </button>
-          )}
+        <section className="space-y-6">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
+                Menü Öğeleri ({items.length})
+                {searchQuery && (
+                  <span className="ml-2 text-emerald-200/60">
+                    · {filteredItems.length} sonuç
+                  </span>
+                )}
+              </p>
+              {items.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="rounded-2xl border border-rose-200/30 bg-rose-200/10 px-4 py-2 text-[11px] font-semibold text-rose-200/90 transition hover:bg-rose-200/20"
+                >
+                  Tümünü Sil
+                </button>
+              )}
+            </div>
+            
+            {/* Arama Input */}
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Menü öğelerinde ara (isim, açıklama, fiyat, bölüm)..."
+                className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 pl-10 text-sm text-white placeholder:text-white/40 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
+              />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                <svg
+                  className="h-5 w-5 text-white/40"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-white/60 transition hover:bg-white/10 hover:text-white"
+                  aria-label="Aramayı temizle"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
+            </div>
+          </div>
+          
           {items.length === 0 && (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-[11px] text-slate-200/70">
               Henüz eklenen yemek yok.
             </div>
           )}
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3"
-            >
-              <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                <img
-                  src={item.image}
-                    alt={getFirstAvailable(item.name, "Menu")}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
+
+          {searchQuery && filteredItems.length === 0 && items.length > 0 && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-[11px] text-slate-200/70">
+              "{searchQuery}" için sonuç bulunamadı.
+            </div>
+          )}
+
+          {/* Bölümlere göre menü öğelerini göster */}
+          {menuSections.map((section) => {
+            const sectionItems = itemsBySection[section.slug] || [];
+            if (sectionItems.length === 0) {
+              return null;
+            }
+
+            return (
+              <div
+                key={section.slug}
+                className="space-y-3 rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                    <img
+                      src={section.image}
+                      alt={section.title}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/menu/hero.png';
+                      }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{section.title}</p>
+                    <p className="text-[11px] text-slate-200/70">
+                      {section.description} · {sectionItems.length} öğe
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {sectionItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
+                    >
+                      <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                        <img
+                          src={item.image}
+                          alt={getFirstAvailable(item.name, "Menu")}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== '/menu/hero.png') {
+                              target.src = '/menu/hero.png';
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">
+                          {getFirstAvailable(item.name, "—")}
+                        </p>
+                        <p className="text-[11px] text-slate-200/70">
+                          {item.price} · Sıra: {item.sortOrder ?? 0}
+                          {getFirstAvailable(item.description, "") && (
+                            <> · {getFirstAvailable(item.description, "")}</>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2 text-right">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(item)}
+                          className="text-[11px] font-semibold text-emerald-200/80 transition hover:text-emerald-200"
+                        >
+                          Düzenle
+                        </button>
+                        <div className="relative">
+                          {deleteConfirmId === item.id ? (
+                            <div className="absolute right-0 top-0 z-20 flex flex-col gap-2 rounded-2xl border border-rose-300/40 bg-gradient-to-br from-rose-900/95 to-rose-800/95 p-3 shadow-2xl shadow-rose-500/20 backdrop-blur-sm min-w-[180px]">
+                              <p className="text-[11px] font-semibold text-rose-50 text-center">
+                                Bu menüyü silmek istediğinize emin misiniz?
+                              </p>
+                              <div className="flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={handleRemoveConfirm}
+                                  className="flex-1 rounded-xl bg-rose-500 px-3 py-1.5 text-[10px] font-semibold text-white shadow-lg shadow-rose-500/30 transition-all hover:bg-rose-600 hover:shadow-xl hover:shadow-rose-500/40 hover:-translate-y-0.5"
+                                >
+                                  Evet
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleRemoveCancel}
+                                  className="flex-1 rounded-xl border border-white/30 bg-white/10 px-3 py-1.5 text-[10px] font-semibold text-white/90 transition-all hover:bg-white/20 hover:border-white/40"
+                                >
+                                  Hayır
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveClick(item.id)}
+                              className="text-[11px] font-semibold text-rose-200/80 transition hover:text-rose-200"
+                            >
+                              Sil
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold">
-                    {getFirstAvailable(item.name, "—")}
-                </p>
-                <p className="text-[11px] text-slate-200/70">
-                  {item.price} · {item.sortOrder ?? 0} ·{" "}
-                    {getFirstAvailable(item.description, "Açıklama yok")}
-                </p>
+            );
+          })}
+
+          {/* Tanımlı olmayan bölümler için öğeler */}
+          {itemsBySection["other"] && itemsBySection["other"].length > 0 && (
+            <div className="space-y-3 rounded-[28px] border border-amber-200/20 bg-amber-200/5 p-5 shadow-xl shadow-black/40">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 overflow-hidden rounded-xl border border-amber-200/20 bg-black/40 flex items-center justify-center">
+                  <span className="text-2xl">⚠️</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-amber-200/90">
+                    Diğer Bölümler
+                  </p>
+                  <p className="text-[11px] text-slate-200/70">
+                    Tanımlı olmayan bölümlerdeki öğeler ·{" "}
+                    {itemsBySection["other"].length} öğe
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-2 text-right">
-                <button
-                  type="button"
-                  onClick={() => handleEdit(item)}
-                  className="text-[11px] font-semibold text-emerald-200/80"
-                >
-                  Düzenle
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRemove(item.id)}
-                  className="text-[11px] font-semibold text-rose-200/80"
-                >
-                  Sil
-                </button>
+              <div className="space-y-2">
+                {itemsBySection["other"].map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
+                  >
+                    <div className="h-12 w-12 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                      <img
+                        src={item.image}
+                        alt={getFirstAvailable(item.name, "Menu")}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (target.src !== '/menu/hero.png') {
+                            target.src = '/menu/hero.png';
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">
+                        {getFirstAvailable(item.name, "—")}
+                      </p>
+                      <p className="text-[11px] text-slate-200/70">
+                        {item.price} · Bölüm: {item.sectionSlug} · Sıra:{" "}
+                        {item.sortOrder ?? 0}
+                        {getFirstAvailable(item.description, "") && (
+                          <> · {getFirstAvailable(item.description, "")}</>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2 text-right">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(item)}
+                        className="text-[11px] font-semibold text-emerald-200/80 transition hover:text-emerald-200"
+                      >
+                        Düzenle
+                      </button>
+                      <div className="relative">
+                        {deleteConfirmId === item.id ? (
+                          <div className="absolute right-0 top-0 z-20 flex flex-col gap-2 rounded-2xl border border-rose-300/40 bg-gradient-to-br from-rose-900/95 to-rose-800/95 p-3 shadow-2xl shadow-rose-500/20 backdrop-blur-sm min-w-[180px]">
+                            <p className="text-[11px] font-semibold text-rose-50 text-center">
+                              Bu menüyü silmek istediğinize emin misiniz?
+                            </p>
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={handleRemoveConfirm}
+                                className="flex-1 rounded-xl bg-rose-500 px-3 py-1.5 text-[10px] font-semibold text-white shadow-lg shadow-rose-500/30 transition-all hover:bg-rose-600 hover:shadow-xl hover:shadow-rose-500/40 hover:-translate-y-0.5"
+                              >
+                                Evet
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleRemoveCancel}
+                                className="flex-1 rounded-xl border border-white/30 bg-white/10 px-3 py-1.5 text-[10px] font-semibold text-white/90 transition-all hover:bg-white/20 hover:border-white/40"
+                              >
+                                Hayır
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveClick(item.id)}
+                            className="text-[11px] font-semibold text-rose-200/80 transition hover:text-rose-200"
+                          >
+                            Sil
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          )}
         </section>
       </div>
     </div>

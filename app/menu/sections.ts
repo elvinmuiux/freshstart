@@ -101,7 +101,7 @@ export const menuSections: MenuSection[] = [
   },
   {
     slug: "icekiler",
-    title: "İçkiler",
+    title: "İçecekler",
     description: "Serinletici seçenekler.",
     items: [],
     image: "/menu_photo/ickiler.jpeg",
@@ -191,7 +191,7 @@ const sectionTranslations: Record<
     de: { title: "Suppen", description: "Warme Vorspeisen." },
   },
   icekiler: {
-    tr: { title: "İçkiler", description: "Serinletici seçenekler." },
+    tr: { title: "İçecekler", description: "Serinletici seçenekler." },
     en: { title: "Drinks", description: "Refreshing options." },
     ru: { title: "Напитки", description: "Освежающие варианты." },
     de: { title: "Getränke", description: "Erfrischende Optionen." },

@@ -4,10 +4,12 @@ type AboutSectionTranslations = {
   menu: string;
   phone: string;
   whatsapp: string;
+  whatsappMessage: string;
 };
 
 type AboutSectionProps = {
   t: AboutSectionTranslations;
+  language: "tr" | "en" | "ru" | "de";
 };
 
 export default function AboutSection({ t }: AboutSectionProps) {
@@ -50,7 +52,7 @@ export default function AboutSection({ t }: AboutSectionProps) {
           <div className="flex flex-wrap gap-2">
             <a
               className="inline-flex items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-500/15 px-4 py-2 text-xs font-semibold text-emerald-100 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500/25"
-              href="https://wa.me/905468783146"
+              href={`https://wa.me/905468783146?text=${encodeURIComponent(t.whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp ile iletişim"

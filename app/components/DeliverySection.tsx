@@ -10,10 +10,12 @@ type DeliverySectionTranslations = {
   fastOrderFor: string;
   latestContentFor: string;
   directCallFor: string;
+  whatsappDeliveryMessage: string;
 };
 
 type DeliverySectionProps = {
   t: DeliverySectionTranslations;
+  language: "tr" | "en" | "ru" | "de";
 };
 
 export default function DeliverySection({ t }: DeliverySectionProps) {
@@ -56,12 +58,10 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
                 </div>
               </a>
               <a
-                href="https://wa.me/905468783146?text=Merhaba%21%20Fresh%20Start%20paket%20servisi%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.%20Teslimat%20s%C3%BCresi%2C%20teslimat%20b%C3%B6lgesi%20ve%20minimum%20sipari%C5%9F%20tutar%C4%B1%20hakk%C4%B1nda%20bilgi%20verebilir%20misiniz%3F"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/menu"
                 className="group relative flex items-center gap-3 cursor-pointer transition-transform hover:scale-105"
-                aria-label="WhatsApp ile paket servis bilgisi al"
-                title="WhatsApp ile paket servis bilgisi al"
+                aria-label="Menü sayfasına git"
+                title="Menü sayfasına git"
               >
                 <div className="relative flex-shrink-0">
                   <div className="absolute inset-0 rounded-2xl bg-emerald-400/20 blur-lg transition-all group-hover:bg-emerald-400/30" />
@@ -112,7 +112,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
           {/* WhatsApp */}
           <a
             className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-emerald-600/10 shadow-lg shadow-emerald-500/10 transition-all duration-300 hover:border-emerald-400/50 hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-1"
-            href="https://wa.me/905468783146"
+            href={`https://wa.me/905468783146?text=${encodeURIComponent(t.whatsappDeliveryMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp ile iletişim"
