@@ -102,7 +102,9 @@ export default function MenuPage() {
               src="/menu/hero.png"
               alt={t.imageAlt}
               className="absolute inset-0 h-full w-full object-cover opacity-35"
-              loading="lazy"
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
             <div className="relative space-y-3 p-5">
@@ -132,12 +134,15 @@ export default function MenuPage() {
                 href={`/menu/${section.slug}`}
                 className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 shadow-lg shadow-black/40"
               >
-                <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
                   <img
                     src={section.image}
                     alt={t.sectionImageAlt(section.title)}
                     className="h-full w-full object-cover"
                     loading="lazy"
+                    decoding="async"
+                    width={56}
+                    height={56}
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = '/menu/hero.png';

@@ -15,13 +15,38 @@ type CustomMenuItem = {
   sortOrder?: number;
 };
 
-const fetchItems = async () => {
-  const response = await fetch("/api/menu-items", { cache: "no-store" });
-  if (!response.ok) {
-    return [];
+// Cache için basit bir in-memory cache
+let cachedItems: CustomMenuItem[] | null = null;
+let cacheTime = 0;
+const CACHE_DURATION = 60000; // 60 saniye
+
+const fetchItems = async (): Promise<CustomMenuItem[]> => {
+  // Cache kontrolü
+  const now = Date.now();
+  if (cachedItems && (now - cacheTime) < CACHE_DURATION) {
+    return cachedItems;
   }
-  const data = (await response.json()) as { items?: CustomMenuItem[] };
-  return Array.isArray(data.items) ? data.items : [];
+
+  try {
+    const response = await fetch("/api/menu-items", {
+      cache: 'force-cache',
+      next: { revalidate: 60 }
+    });
+    if (!response.ok) {
+      return cachedItems || [];
+    }
+    const data = (await response.json()) as { items?: CustomMenuItem[] };
+    const items = Array.isArray(data.items) ? data.items : [];
+    
+    // Cache'i güncelle
+    cachedItems = items;
+    cacheTime = now;
+    
+    return items;
+  } catch (error) {
+    console.error("Failed to fetch menu items:", error);
+    return cachedItems || [];
+  }
 };
 
 const translations = {
@@ -84,25 +109,39 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   );
 
   const [customItems, setCustomItems] = useState<CustomMenuItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isActive = true;
+    let timeoutId: NodeJS.Timeout;
+    
     const refresh = async () => {
-      const items = await fetchItems();
-      if (isActive) {
-        setCustomItems(items);
+      setIsLoading(true);
+      try {
+        const items = await fetchItems();
+        // Debounce ile UI güncellemesi
+        timeoutId = setTimeout(() => {
+          if (isActive) {
+            setCustomItems(items);
+            setIsLoading(false);
+          }
+        }, 50);
+      } catch (error) {
+        console.error("Failed to fetch menu items:", error);
+        if (isActive) {
+          setCustomItems([]);
+          setIsLoading(false);
+        }
       }
     };
+    
     refresh();
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible" && isActive) {
-        refresh();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
+    
     return () => {
       isActive = false;
-      document.removeEventListener("visibilitychange", handleVisibility);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, []);
 
@@ -161,7 +200,9 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                   src={section.image}
                   alt={`${localized.title} görseli`}
                   className="h-full w-full object-cover"
-                  loading="lazy"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = '/menu/hero.png';
@@ -187,12 +228,17 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
               {t.listTitle}
             </p>
             <div className="mt-4 space-y-3">
-              {mergedItems.length === 0 && (
+              {isLoading && (
+                <div className="rounded-2xl border border-white/10 bg-black/30 px-3 py-3 text-[11px] text-slate-200/70 text-center">
+                  Yükleniyor...
+                </div>
+              )}
+              {!isLoading && mergedItems.length === 0 && (
                 <div className="rounded-2xl border border-white/10 bg-black/30 px-3 py-3 text-[11px] text-slate-200/70">
                   {t.empty}
                 </div>
               )}
-              {mergedItems.map((item) => {
+              {!isLoading && mergedItems.map((item) => {
                 const itemName = getText(item.name, "Ürün");
                 const itemDescription = getText(item.description, "");
                 const whatsappLink = createWhatsAppOrderLink(
@@ -203,15 +249,18 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
                 return (
                   <div
-                    key={`${itemName}-${item.price}`}
+                    key={item.id || `${itemName}-${item.price}`}
                     className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
                   >
-                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40">
+                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
                       <img
                         src={item.image || '/menu/hero.png'}
                         alt={itemName}
                         className="h-full w-full object-cover"
                         loading="lazy"
+                        decoding="async"
+                        width={56}
+                        height={56}
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           if (target.src !== '/menu/hero.png') {

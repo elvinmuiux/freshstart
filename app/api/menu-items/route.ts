@@ -59,7 +59,12 @@ export async function GET() {
     const items = (data ?? []).map((item) =>
       normalizeItem(item as Record<string, unknown>)
     );
-    return NextResponse.json({ items }, { status: 200 });
+    return NextResponse.json({ items }, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
+    });
   } catch (error) {
     return NextResponse.json(
       { error: getErrorMessage(error) },
