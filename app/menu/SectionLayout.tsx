@@ -30,7 +30,6 @@ const fetchItems = async (): Promise<CustomMenuItem[]> => {
   try {
     const response = await fetch("/api/menu-items", {
       cache: 'force-cache',
-      next: { revalidate: 60 }
     });
     if (!response.ok) {
       return cachedItems || [];
@@ -113,7 +112,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
   useEffect(() => {
     let isActive = true;
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     
     const refresh = async () => {
       setIsLoading(true);
@@ -149,7 +148,13 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
     const extra = customItems.filter(
       (item) => item.sectionSlug === section.slug
     );
-    const combined = [...section.items, ...extra];
+    // section.items'ı CustomMenuItem formatına çevir (id ekle)
+    const sectionItemsWithId = section.items.map((item, index) => ({
+      ...item,
+      id: `static-${section.slug}-${index}`,
+      sectionSlug: section.slug,
+    }));
+    const combined = [...sectionItemsWithId, ...extra];
     return combined.sort(
       (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
     );
@@ -249,7 +254,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
                 return (
                   <div
-                    key={item.id || `${itemName}-${item.price}`}
+                    key={item.id}
                     className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
                   >
                     <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
