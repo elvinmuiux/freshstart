@@ -209,21 +209,6 @@ export default function Home() {
                 </p>
                 <p className="text-[11px] text-slate-200/70">{t.footerLocation}</p>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-px bg-gradient-to-b from-transparent via-emerald-400/30 to-transparent" />
-                <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-200/80">
-                  <span>{t.footerRights}</span>
-                  <a
-                    className="group inline-flex items-center justify-center rounded-full border border-emerald-400/30 bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-100 transition-all hover:border-emerald-400/50 hover:bg-emerald-500/25 hover:shadow-lg hover:shadow-emerald-500/20 hover:-translate-y-0.5"
-                    href="https://descube.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="relative z-10">descube</span>
-                  </a>
-                  <span>{t.footerBy}</span>
-                </div>
-              </div>
             </div>
           </div>
         </footer>
