@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useLanguage } from "../hooks/useLanguage";
 import { getLocalizedSection, type MenuSection } from "./sections";
 import type { LanguageKey } from "../lib/language";
@@ -201,17 +202,15 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
           <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent p-5 shadow-xl shadow-black/50 lg:sticky lg:top-8">
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-black/40">
-                <img
+                <Image
                   src={section.image}
                   alt={`${localized.title} görseli`}
                   className="h-full w-full object-cover"
-                  loading="eager"
+                  width={64}
+                  height={64}
+                  sizes="64px"
+                  quality={58}
                   fetchPriority="high"
-                  decoding="async"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/menu/hero.png';
-                  }}
                 />
               </div>
               <div>
@@ -258,20 +257,14 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                     className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
                   >
                     <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
-                      <img
+                      <Image
                         src={item.image || '/menu/hero.png'}
                         alt={itemName}
                         className="h-full w-full object-cover"
-                        loading="lazy"
-                        decoding="async"
                         width={56}
                         height={56}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          if (target.src !== '/menu/hero.png') {
-                            target.src = '/menu/hero.png';
-                          }
-                        }}
+                        sizes="56px"
+                        quality={55}
                       />
                     </div>
                     <div className="flex-1">

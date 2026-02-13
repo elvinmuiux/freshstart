@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import Image from "next/image";
 import { useLanguage } from "../hooks/useLanguage";
 import { getLocalizedSection, menuSections } from "./sections";
 import LanguageSelector from "../components/LanguageSelector";
@@ -98,13 +99,14 @@ export default function MenuPage() {
 
         <section className="space-y-4 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-6 lg:space-y-0">
           <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60 lg:sticky lg:top-8">
-            <img
+            <Image
               src="/menu/hero.png"
               alt={t.imageAlt}
               className="absolute inset-0 h-full w-full object-cover opacity-35"
-              loading="eager"
+              fill
+              sizes="(max-width: 1024px) 100vw, 45vw"
+              quality={65}
               fetchPriority="high"
-              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
             <div className="relative space-y-3 p-5">
@@ -135,18 +137,14 @@ export default function MenuPage() {
                 className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 shadow-lg shadow-black/40"
               >
                 <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
-                  <img
+                  <Image
                     src={section.image}
                     alt={t.sectionImageAlt(section.title)}
                     className="h-full w-full object-cover"
-                    loading="lazy"
-                    decoding="async"
                     width={56}
                     height={56}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/menu/hero.png';
-                    }}
+                    sizes="56px"
+                    quality={58}
                   />
                 </div>
                 <div className="flex-1">
