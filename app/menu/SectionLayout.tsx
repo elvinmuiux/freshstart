@@ -178,8 +178,8 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
   return (
     <div className="min-h-screen bg-[#0f1516] text-white">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8">
-        <header className="flex items-center justify-between">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8 lg:max-w-none lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
+        <header className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
               {t.menu}
@@ -190,15 +190,15 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
             </p>
           </div>
           <a
-            className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/90 transition hover:bg-white/20"
+            className="inline-flex shrink-0 items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/90 transition hover:bg-white/20"
             href="/menu"
           >
             ← {t.back}
           </a>
         </header>
 
-        <section className="space-y-4">
-          <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent p-5 shadow-xl shadow-black/50">
+        <section className="space-y-4 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-6 lg:space-y-0">
+          <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent p-5 shadow-xl shadow-black/50 lg:sticky lg:top-8">
             <div className="flex items-center gap-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-black/40">
                 <img
@@ -232,7 +232,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">
               {t.listTitle}
             </p>
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
               {isLoading && (
                 <div className="rounded-2xl border border-white/10 bg-black/30 px-3 py-3 text-[11px] text-slate-200/70 text-center">
                   Yükleniyor...

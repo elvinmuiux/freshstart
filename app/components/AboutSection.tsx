@@ -14,7 +14,7 @@ type AboutSectionProps = {
 
 export default function AboutSection({ t }: AboutSectionProps) {
   return (
-    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60">
+    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60 lg:h-full">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent" />
       <div className="relative space-y-5 p-5">
         <div className="space-y-4">
@@ -26,7 +26,7 @@ export default function AboutSection({ t }: AboutSectionProps) {
               <h2 className="text-xl font-semibold">{t.aboutTitle}</h2>
             </div>
           </div>
-          <p className="text-[12px] leading-relaxed text-slate-200/85">
+          <p className="text-[12px] leading-relaxed text-slate-200/85 lg:text-[13px]">
             {t.aboutBody}
           </p>
           <div className="flex flex-wrap gap-2">

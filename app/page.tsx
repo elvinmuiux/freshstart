@@ -136,7 +136,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0c1113] text-white">
-      <main className="relative mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8">
+      <main className="relative mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8 lg:max-w-none lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
         <header className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="-mt-4 space-y-4">
+        <section className="-mt-4 space-y-4 lg:mt-0">
           <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60">
             <img
               src="/menu/hero.png"
@@ -194,7 +194,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="-mt-2 space-y-4">
+        <section className="-mt-2 space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
           <AboutSection t={t} language={language} />
           <DeliverySection t={t} language={language} />
         </section>

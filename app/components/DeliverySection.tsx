@@ -20,7 +20,7 @@ type DeliverySectionProps = {
 
 export default function DeliverySection({ t }: DeliverySectionProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 lg:h-full">
       {/* Header Card */}
       <div className="relative overflow-hidden rounded-[24px] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-transparent p-6 shadow-xl shadow-emerald-500/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-400/10 via-transparent to-transparent" />
@@ -108,7 +108,7 @@ export default function DeliverySection({ t }: DeliverySectionProps) {
         <p className="text-center text-[10px] font-semibold uppercase tracking-[0.35em] text-slate-300/60">
           {t.contactPreference}
         </p>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-4 lg:justify-start">
           {/* WhatsApp */}
           <a
             className="group relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-emerald-600/10 shadow-lg shadow-emerald-500/10 transition-all duration-300 hover:border-emerald-400/50 hover:shadow-xl hover:shadow-emerald-500/20 hover:-translate-y-1"

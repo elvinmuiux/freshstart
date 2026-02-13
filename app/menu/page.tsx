@@ -78,7 +78,7 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-[#0c1113] text-white">
-      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8">
+      <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8 lg:max-w-none lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
         <header className="space-y-2">
           <div className="flex items-center justify-between gap-3">
             <a
@@ -96,8 +96,8 @@ export default function MenuPage() {
           <p className="text-[11px] text-slate-200/75">{t.description}</p>
         </header>
 
-        <section className="space-y-4">
-          <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60">
+        <section className="space-y-4 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-6 lg:space-y-0">
+          <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#11181b] shadow-2xl shadow-black/60 lg:sticky lg:top-8">
             <img
               src="/menu/hero.png"
               alt={t.imageAlt}
@@ -127,7 +127,7 @@ export default function MenuPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
             {localizedSections.map((section) => (
               <a
                 key={section.slug}
