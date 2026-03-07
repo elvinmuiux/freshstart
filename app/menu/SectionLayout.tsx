@@ -108,7 +108,6 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
 
   useEffect(() => {
     let isActive = true;
-    let timeoutId: ReturnType<typeof setTimeout>;
     
     const refresh = async () => {
       setIsLoading(true);
@@ -140,9 +139,6 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
     return () => {
       isActive = false;
       document.removeEventListener("visibilitychange", handleVisibility);
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     };
   }, []);
 
