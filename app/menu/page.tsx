@@ -6,12 +6,12 @@ import { useLanguage } from "../hooks/useLanguage";
 import { useTheme } from "../hooks/useTheme";
 import { getLocalizedSection, menuSections } from "./sections";
 import LanguageSelector from "../components/LanguageSelector";
-import ThemeToggle from "../components/ThemeToggle";
+import Link from "next/link";
 
 const translations = {
   tr: {
     menu: "Menü",
-    title: "F. Start Menü",
+    title: "Fresh Start Menü",
     description: "Bölümlere ayrılmış menüden seçiminizi yapın.",
     spotlight: "Günün seçkisi",
     spotlightTitle: "Taze hazırlanan bölümler",
@@ -25,7 +25,7 @@ const translations = {
   },
   en: {
     menu: "Menu",
-    title: "F. Start Menu",
+    title: "Fresh Start Menu",
     description: "Choose from the menu sections.",
     spotlight: "Today's selection",
     spotlightTitle: "Freshly prepared sections",
@@ -39,7 +39,7 @@ const translations = {
   },
   ru: {
     menu: "Меню",
-    title: "Меню F. Start",
+    title: "Меню Fresh Start",
     description: "Выберите раздел из меню.",
     spotlight: "Выбор дня",
     spotlightTitle: "Свежие разделы",
@@ -53,7 +53,7 @@ const translations = {
   },
   de: {
     menu: "Menü",
-    title: "F. Start Menü",
+    title: "Fresh Start Menü",
     description: "Wähle einen Bereich aus dem Menü.",
     spotlight: "Tagesauswahl",
     spotlightTitle: "Frisch zubereitete Bereiche",
@@ -88,7 +88,7 @@ export default function MenuPage() {
       <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8 lg:max-w-none lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
         <header className="space-y-2">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <a
+            <Link
               className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest transition shrink-0 ${
                 isDark
                   ? "border-white/15 bg-white/10 text-white/90 hover:bg-white/20"
@@ -97,9 +97,8 @@ export default function MenuPage() {
               href="/"
             >
               ← {t.back}
-            </a>
+            </Link>
             <div className="flex items-center gap-2 shrink-0">
-              <ThemeToggle />
               <LanguageSelector />
             </div>
           </div>
@@ -176,7 +175,7 @@ export default function MenuPage() {
 
           <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
             {localizedSections.map((section) => (
-              <a
+              <Link
                 key={section.slug}
                 href={`/menu/${section.slug}`}
                 className={`flex items-center gap-3 rounded-2xl border px-3 py-3 shadow-lg transition-colors duration-300 ${
@@ -211,7 +210,7 @@ export default function MenuPage() {
                 <span className={`text-sm ${
                   isDark ? "text-emerald-200/80" : "text-emerald-600"
                 }`}>→</span>
-              </a>
+              </Link>
             ))}
           </div>
         </section>

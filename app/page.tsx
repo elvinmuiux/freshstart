@@ -6,7 +6,7 @@ import { useTheme } from "./hooks/useTheme";
 import AboutSection from "./components/AboutSection";
 import DeliverySection from "./components/DeliverySection";
 import LanguageSelector from "./components/LanguageSelector";
-import ThemeToggle from "./components/ThemeToggle";
+import Link from "next/link";
 
 
 const translations = {
@@ -16,9 +16,9 @@ const translations = {
     heroBody: "WhatsApp üzerinden kolayca sipariş verin, hızlı teslimat alın.",
     menu: "Menü",
     language: "Dil",
-    aboutTitle: "F. Start hakkında",
+    aboutTitle: "Fresh Start hakkında",
     aboutBody:
-      "F. Start – Dünya & Türk Mutfağı. F. Start, taze malzemelerle hazırlanan Türk ve dünya mutfağından lezzetleri bir araya getirir. Izgara yemeklerden ev yemeklerine, bowl'lardan sandviç ve çorbalara kadar her şey günlük ve özenle hazırlanır. Antalya’da hizmet veriyoruz. Taze & ev yapımı lezzetler. Hızlı paket servis ve gel-al seçenekleri. WhatsApp üzerinden kolayca sipariş verebilir veya menümüzü inceleyebilirsiniz. Gerçek lezzet, temiz mutfak, samimi hizmet.",
+      "Fresh Start – Dünya & Türk Mutfağı. Fresh Start, taze malzemelerle hazırlanan Türk ve dünya mutfağından lezzetleri bir araya getirir. Izgara yemeklerden ev yemeklerine, bowl'lardan sandviç ve çorbalara kadar her şey günlük ve özenle hazırlanır. Antalya’da hizmet veriyoruz. Taze & ev yapımı lezzetler. Hızlı paket servis ve gel-al seçenekleri. WhatsApp üzerinden kolayca sipariş verebilir veya menümüzü inceleyebilirsiniz. Gerçek lezzet, temiz mutfak, samimi hizmet.",
     searchPlaceholder: "Ara",
     searchAria: "Arama",
     searchButton: "Arama yap",
@@ -38,8 +38,8 @@ const translations = {
     footerBy: "tarafından korumaktadır",
     footerMadeWith: "Antalya'da ❤️ ile yapıldı",
     footerSupportedBy: "Tərəfindən dəstəklənir",
-    whatsappMessage: "Merhaba! F. Start Ekibi\n\nSipariş vermek istiyorum.",
-    whatsappDeliveryMessage: "Merhaba! F. Start Ekibi\n\nPaket servis ile sipariş vermek istiyorum.",
+    whatsappMessage: "Merhaba! Fresh Start Ekibi\n\nSipariş vermek istiyorum.",
+    whatsappDeliveryMessage: "Merhaba! Fresh Start Ekibi\n\nPaket servis ile sipariş vermek istiyorum.",
   },
   en: {
     premiumExperience: "Welcome",
@@ -47,9 +47,9 @@ const translations = {
     heroBody: "Order easily via WhatsApp for fast delivery.",
     menu: "Menu",
     language: "Language",
-    aboutTitle: "About F. Start",
+    aboutTitle: "About Fresh Start",
     aboutBody:
-      "F. Start – World & Turkish Cuisine. We bring together Turkish and world flavors prepared with fresh ingredients. From grilled dishes and home-style meals to bowls, sandwiches, and soups, everything is prepared daily with care. We serve in Antalya, offering fresh & homemade flavors with fast delivery and pick-up options. You can easily order via WhatsApp or browse our menu. Real flavor, clean kitchen, friendly service.",
+      "Fresh Start – World & Turkish Cuisine. We bring together Turkish and world flavors prepared with fresh ingredients. From grilled dishes and home-style meals to bowls, sandwiches, and soups, everything is prepared daily with care. We serve in Antalya, offering fresh & homemade flavors with fast delivery and pick-up options. You can easily order via WhatsApp or browse our menu. Real flavor, clean kitchen, friendly service.",
     searchPlaceholder: "Search",
     searchAria: "Search",
     searchButton: "Search",
@@ -69,8 +69,8 @@ const translations = {
     footerBy: "",
     footerMadeWith: "Made with ❤️ in Antalya",
     footerSupportedBy: "Supported by",
-    whatsappMessage: "Hello! F. Start Team\n\nI would like to place an order.",
-    whatsappDeliveryMessage: "Hello! F. Start Team\n\nI would like to order for delivery.",
+    whatsappMessage: "Hello! Fresh Start Team\n\nI would like to place an order.",
+    whatsappDeliveryMessage: "Hello! Fresh Start Team\n\nI would like to order for delivery.",
   },
   ru: {
     premiumExperience: "Добро пожаловать",
@@ -78,9 +78,9 @@ const translations = {
     heroBody: "Заказывайте легко через WhatsApp для быстрой доставки.",
     menu: "Меню",
     language: "Язык",
-    aboutTitle: "О F. Start",
+    aboutTitle: "О Fresh Start",
     aboutBody:
-      "F. Start — мировая и турецкая кухня. F. Start объединяет турецкие и мировые блюда, приготовленные из свежих ингредиентов. От блюд на гриле и домашней кухни до боулов, сэндвичей и супов — все готовится ежедневно и с заботой. Мы работаем в Анталье. Свежие и домашние вкусы. Быстрая доставка и самовывоз. Вы можете легко заказать через WhatsApp или ознакомиться с нашим меню. Настоящий вкус, чистая кухня, дружелюбный сервис.",
+      "Fresh Start — мировая и турецкая кухня. Fresh Start объединяет турецкие и мировые блюда, приготовленные из свежих ингредиентов. От блюд на гриле и домашней кухни до боулов, сэндвичей и супов — все готовится ежедневно и с заботой. Мы работаем в Анталье. Свежие и домашние вкусы. Быстрая доставка и самовывоз. Вы можете легко заказать через WhatsApp или ознакомиться с нашим меню. Настоящий вкус, чистая кухня, дружелюбный сервис.",
     searchPlaceholder: "Поиск",
     searchAria: "Поиск",
     searchButton: "Искать",
@@ -100,8 +100,8 @@ const translations = {
     footerBy: "",
     footerMadeWith: "Сделано с ❤️ в Анталье",
     footerSupportedBy: "Поддерживается",
-    whatsappMessage: "Здравствуйте! Команда F. Start\n\nЯ хотел бы сделать заказ.",
-    whatsappDeliveryMessage: "Здравствуйте! Команда F. Start\n\nЯ хотел бы заказать доставку.",
+    whatsappMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы сделать заказ.",
+    whatsappDeliveryMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы заказать доставку.",
   },
   de: {
     premiumExperience: "Willkommen",
@@ -109,9 +109,9 @@ const translations = {
     heroBody: "Bestellen Sie einfach über WhatsApp für schnelle Lieferung.",
     menu: "Menü",
     language: "Sprache",
-    aboutTitle: "Über F. Start",
+    aboutTitle: "Über Fresh Start",
     aboutBody:
-      "F. Start – Welt- & türkische Küche. F. Start vereint türkische und internationale Gerichte, zubereitet mit frischen Zutaten. Von Grillgerichten und Hausmannskost bis zu Bowls, Sandwiches und Suppen wird alles täglich und sorgfältig zubereitet. Wir sind in Antalya tätig. Frische & hausgemachte Aromen. Schnelle Lieferung und Abholung. Sie können ganz einfach per WhatsApp bestellen oder unser Menü ansehen. Echter Geschmack, saubere Küche, freundlicher Service.",
+      "Fresh Start – Welt- & türkische Küche. Fresh Start vereint türkische und internationale Gerichte, zubereitet mit frischen Zutaten. Von Grillgerichten und Hausmannskost bis zu Bowls, Sandwiches und Suppen wird alles täglich und sorgfältig zubereitet. Wir sind in Antalya tätig. Frische & hausgemachte Aromen. Schnelle Lieferung und Abholung. Sie können ganz einfach per WhatsApp bestellen oder unser Menü ansehen. Echter Geschmack, saubere Küche, freundlicher Service.",
     searchPlaceholder: "Suchen",
     searchAria: "Suchen",
     searchButton: "Suchen",
@@ -131,8 +131,8 @@ const translations = {
     footerBy: "",
     footerMadeWith: "Mit ❤️ in Antalya gemacht",
     footerSupportedBy: "Unterstützt von",
-    whatsappMessage: "Hallo! F. Start Team\n\nIch möchte eine Bestellung aufgeben.",
-    whatsappDeliveryMessage: "Hallo! F. Start Team\n\nIch möchte eine Lieferung bestellen.",
+    whatsappMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Bestellung aufgeben.",
+    whatsappDeliveryMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Lieferung bestellen.",
   },
 };
 
@@ -156,7 +156,7 @@ export default function Home() {
               }`}>
                 <img
                   src="/logo/logo.jpeg"
-                  alt="F. Start Logo"
+                  alt="Fresh Start Logo"
                   className="h-full w-full object-cover rounded-full"
                   loading="eager"
                   decoding="async"
@@ -169,11 +169,10 @@ export default function Home() {
                 }`}>
                   {t.premiumExperience}
                 </p>
-                <h1 className="text-2xl font-semibold">F. Start</h1>
+                <h1 className="text-2xl font-semibold">Fresh Start</h1>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               <LanguageSelector />
             </div>
           </div>
@@ -210,7 +209,7 @@ export default function Home() {
               <p className={`text-[11px] ${
                 isDark ? "text-slate-200/75" : "text-[#5C4A3A]"
               }`}>{t.heroBody}</p>
-              <a
+              <Link
                 className={`group relative inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-widest shadow-lg transition-transform hover:-translate-y-0.5 overflow-hidden ${
                   isDark
                     ? "border-emerald-400/40 text-emerald-100 shadow-emerald-500/20"
@@ -227,7 +226,7 @@ export default function Home() {
                 <span className={`relative z-10 transition-transform group-hover:translate-x-1 ${
                   isDark ? "text-emerald-200" : "text-emerald-700"
                 }`}>→</span>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -251,7 +250,7 @@ export default function Home() {
                 <p className={`text-xs font-bold ${
                   isDark ? "text-emerald-200/90" : "text-[#5C4A3A]"
                 }`}>
-                  © {new Date().getFullYear()} F. Start
+                  © {new Date().getFullYear()} Fresh Start
                 </p>
                 <p className={`text-[11px] ${
                   isDark ? "text-slate-200/70" : "text-[#5C4A3A]"
@@ -263,7 +262,7 @@ export default function Home() {
                 isDark ? "text-slate-300/60" : "text-[#5C4A3A]/70"
               }`}>
                 {t.footerSupportedBy}{" "}
-                <a
+                <Link
                   href="https://descube.com"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -272,7 +271,7 @@ export default function Home() {
                   }`}
                 >
                   descube
-                </a>
+                </Link>
               </p>
             </div>
           </div>

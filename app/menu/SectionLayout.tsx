@@ -6,8 +6,8 @@ import { useLanguage } from "../hooks/useLanguage";
 import { useTheme } from "../hooks/useTheme";
 import { getLocalizedSection, type MenuSection } from "./sections";
 import type { LanguageKey } from "../lib/language";
-import ThemeToggle from "../components/ThemeToggle";
 import LanguageSelector from "../components/LanguageSelector";
+import Link from "next/link";
 
 type CustomMenuItem = {
   id: string;
@@ -222,9 +222,8 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
               {t.menu}
             </p>
             <div className="flex items-center gap-2 shrink-0 flex-wrap">
-              <ThemeToggle />
               <LanguageSelector />
-              <a
+              <Link
                 className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest transition ${
                   isDark
                     ? "border-white/15 bg-white/10 text-white/90 hover:bg-white/20"
@@ -233,7 +232,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                 href="/menu"
               >
                 ← {t.back}
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-baseline gap-3 flex-wrap">
@@ -371,7 +370,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                           }`}>
                             {item.price}
                           </span>
-                          <a
+                          <Link
                             href={whatsappLink}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -382,7 +381,7 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                             }`}
                           >
                             {t.order}
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>
