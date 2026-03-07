@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { menuSections } from "../menu/sections";
 import { languages, type LanguageKey } from "../lib/language";
 
@@ -509,13 +510,13 @@ export default function AdminAddPage() {
             Yeni yemek ekleyin ve menüde gösterin.
           </p>
           </div>
-          <a
+          <Link
             className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-400"
             href="/"
           >
             <span className="text-sm">←</span>
             Ana sayfa
-          </a>
+          </Link>
         </header>
         <div className="flex items-center justify-end">
           <button
@@ -934,7 +935,7 @@ export default function AdminAddPage() {
 
           {searchQuery && filteredItems.length === 0 && items.length > 0 && (
             <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-[11px] text-slate-200/70">
-              "{searchQuery}" için sonuç bulunamadı.
+              &quot;{searchQuery}&quot; için sonuç bulunamadı.
             </div>
           )}
 

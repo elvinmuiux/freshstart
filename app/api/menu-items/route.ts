@@ -44,7 +44,11 @@ type MenuItemInput = {
 
 export async function GET() {
   try {
+    console.log("📥 GET /api/menu-items - Starting request");
+    
     const supabaseAdmin = requireSupabase();
+    console.log("✅ Supabase client created");
+    
     // Limitsiz erişim için limit belirtilmedi
     const { data, error } = await supabaseAdmin
       .from(TABLE_NAME)
@@ -53,12 +57,39 @@ export async function GET() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("❌ Supabase query error:", error);
+      
+      // DNS/Network error handling
+      if (error.message?.includes("fetch failed") || error.message?.includes("ENOTFOUND") || error.details?.includes("ENOTFOUND")) {
+        console.error("🌐 DNS/Network error detected. Returning empty array.");
+        // Supabase bağlantısı yoksa boş array döndür (sayfa çalışmaya devam etsin)
+        return NextResponse.json(
+          { 
+            items: [],
+            warning: "Supabase bağlantı hatası: DNS çözümleme başarısız oldu. Lütfen Supabase projenizi kontrol edin.",
+            error: error.details || error.message,
+          },
+          { status: 200 } // 200 döndür ki sayfa çalışmaya devam etsin
+        );
+      }
+      
+      return NextResponse.json(
+        { 
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        },
+        { status: 500 }
+      );
     }
 
     const items = (data ?? []).map((item) =>
       normalizeItem(item as Record<string, unknown>)
     );
+    
+    console.log(`✅ Successfully fetched ${items.length} menu items`);
+    
     return NextResponse.json({ items }, { 
       status: 200,
       headers: {
@@ -66,8 +97,27 @@ export async function GET() {
       },
     });
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    console.error("❌ GET /api/menu-items error:", errorMessage);
+    console.error("Error details:", error);
+    
+    // Supabase bağlantı hatası durumunda boş array döndür
+    if (errorMessage.includes("ENOTFOUND") || errorMessage.includes("fetch failed") || errorMessage.includes("Supabase")) {
+      console.warn("⚠️ Supabase bağlantı hatası. Boş array döndürülüyor.");
+      return NextResponse.json(
+        { 
+          items: [],
+          warning: "Supabase bağlantı hatası. Lütfen Supabase projenizi kontrol edin.",
+        },
+        { status: 200 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: getErrorMessage(error) },
+      { 
+        error: errorMessage,
+        type: error instanceof Error ? error.constructor.name : typeof error,
+      },
       { status: 500 }
     );
   }

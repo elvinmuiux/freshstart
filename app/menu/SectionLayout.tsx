@@ -28,16 +28,51 @@ const fetchItems = async (): Promise<CustomMenuItem[]> => {
         'Pragma': 'no-cache',
       },
     });
-    if (!response.ok) {
-      console.error("API response not ok:", response.status, response.statusText);
+    
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      const text = await response.text();
+      console.error("❌ Failed to parse JSON response:", text);
+      console.error("Response status:", response.status, response.statusText);
       return [];
     }
-    const data = (await response.json()) as { items?: CustomMenuItem[] };
+    
+    if (!response.ok) {
+      const errorMessage = data?.error || response.statusText || "Unknown error";
+      const errorDetails = data?.details || data;
+      const warning = data?.warning;
+      
+      // Eğer warning varsa ve items boş array ise, bu normal (Supabase bağlantı sorunu ama sayfa çalışıyor)
+      if (warning && Array.isArray(data?.items) && data.items.length === 0) {
+        console.warn("⚠️", warning);
+        return [];
+      }
+      
+      console.error("❌ API error:", response.status, errorMessage);
+      console.error("Error details:", errorDetails);
+      
+      // Supabase configuration error
+      if (errorMessage.includes("Supabase") || errorMessage.includes("environment") || errorMessage.includes("fetch failed") || errorMessage.includes("ENOTFOUND")) {
+        console.warn(
+          "⚠️ Supabase bağlantı sorunu tespit edildi. " +
+          "Lütfen Supabase Dashboard'dan projenizin aktif olduğunu ve URL'in doğru olduğunu kontrol edin."
+        );
+      }
+      
+      return [];
+    }
+    
     const items = Array.isArray(data.items) ? data.items : [];
+    console.log("✅ Fetched menu items:", items.length, "items");
     
     return items;
   } catch (error) {
-    console.error("Failed to fetch menu items:", error);
+    console.error("❌ Failed to fetch menu items:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+    }
     return [];
   }
 };

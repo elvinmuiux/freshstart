@@ -8,10 +8,13 @@ import {
 } from "../lib/language";
 
 export const useLanguage = () => {
+  // Always start with "en" to avoid hydration mismatch
+  // Will be updated from localStorage after hydration
   const [language, setLanguage] = useState<LanguageKey>("en");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    // Only read from localStorage after component mounts (client-side only)
     const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (isLanguageKey(stored)) {
       setLanguage(stored);

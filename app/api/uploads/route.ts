@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     let supabaseAdmin = null;
     try {
       supabaseAdmin = getSupabaseAdmin();
-    } catch (error) {
+    } catch {
       supabaseAdmin = null;
     }
     if (!supabaseAdmin) {
