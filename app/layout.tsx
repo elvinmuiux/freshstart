@@ -4,13 +4,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://freshstartx.com"),
   title: {
-    default: "Fresh Start | Dünya & Türk Mutfağı",
-    template: "%s | Fresh Start",
+    default: "F. Start | Dünya & Türk Mutfağı",
+    template: "%s | F. Start",
   },
   description:
-    "Antalya'da taze ve ev yapımı lezzetler. Fresh Start'ta Türk ve dünya mutfağından günlük hazırlanan yemekler, hızlı paket servis ve gel-al seçenekleri.",
+    "Antalya'da taze ve ev yapımı lezzetler. F. Start'ta Türk ve dünya mutfağından günlük hazırlanan yemekler, hızlı paket servis ve gel-al seçenekleri.",
   keywords: [
-    "Fresh Start",
+    "F. Start",
     "Antalya",
     "Türk mutfağı",
     "dünya mutfağı",
@@ -22,24 +22,24 @@ export const metadata: Metadata = {
     "çorba",
     "bowl",
   ],
-  authors: [{ name: "Fresh Start" }],
-  creator: "Fresh Start",
-  publisher: "Fresh Start",
+  authors: [{ name: "F. Start" }],
+  creator: "F. Start",
+  publisher: "F. Start",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Fresh Start | Dünya & Türk Mutfağı",
+    title: "F. Start | Dünya & Türk Mutfağı",
     description:
       "Antalya'da taze ve ev yapımı lezzetler. Türk ve dünya mutfağından günlük hazırlanan yemekler, hızlı paket servis ve gel-al seçenekleri.",
     url: "https://freshstartx.com",
-    siteName: "Fresh Start",
+    siteName: "F. Start",
     locale: "tr_TR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fresh Start | Dünya & Türk Mutfağı",
+    title: "F. Start | Dünya & Türk Mutfağı",
     description:
       "Antalya'da taze ve ev yapımı lezzetler. Türk ve dünya mutfağından günlük hazırlanan yemekler, hızlı paket servis ve gel-al seçenekleri.",
   },
@@ -62,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-theme="dark">
       <body 
         className="antialiased"
         data-new-gr-c-s-check-loaded="14.1271.0"

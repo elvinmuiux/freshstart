@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useLanguage } from "../hooks/useLanguage";
+import { useTheme } from "../hooks/useTheme";
 import { getLocalizedSection, type MenuSection } from "./sections";
 import type { LanguageKey } from "../lib/language";
+import ThemeToggle from "../components/ThemeToggle";
+import LanguageSelector from "../components/LanguageSelector";
 
 type CustomMenuItem = {
   id: string;
@@ -102,6 +105,8 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   }
 
   const [language] = useLanguage();
+  const [theme] = useTheme();
+  const isDark = theme === "dark";
   const t = translations[language];
   const localized = useMemo(
     () => getLocalizedSection(section, language),
@@ -178,30 +183,56 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1516] text-white">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      isDark ? "bg-[#0f1516] text-white" : "bg-[#E8D5B7] text-[#1e293b]"
+    }`}>
       <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 pb-12 pt-8 lg:max-w-none lg:px-10 lg:pb-16 lg:pt-10 xl:px-14">
-        <header className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.35em] text-emerald-200/80">
+        <header className="space-y-3">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <p className={`text-[10px] font-semibold uppercase tracking-[0.35em] ${
+              isDark ? "text-emerald-200/80" : "text-emerald-600"
+            }`}>
               {t.menu}
             </p>
-            <h1 className="text-2xl font-semibold">{localized.title}</h1>
-            <p className="text-[11px] text-slate-200/75">
-              {localized.description}
-            </p>
+            <div className="flex items-center gap-2 shrink-0 flex-wrap">
+              <ThemeToggle />
+              <LanguageSelector />
+              <a
+                className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest transition ${
+                  isDark
+                    ? "border-white/15 bg-white/10 text-white/90 hover:bg-white/20"
+                    : "border-[#D4C4A8] bg-[#F0E6D2] text-[#5C4A3A] shadow-sm hover:bg-[#E8D5B7]"
+                }`}
+                href="/menu"
+              >
+                ← {t.back}
+              </a>
+            </div>
           </div>
-          <a
-            className="inline-flex shrink-0 items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/90 transition hover:bg-white/20"
-            href="/menu"
-          >
-            ← {t.back}
-          </a>
+          <div className="flex items-baseline gap-3 flex-wrap">
+            <h1 className="text-2xl font-semibold">
+              {localized.title}
+              <span className={`text-sm font-normal ml-3 ${
+                isDark ? "text-slate-200/75" : "text-[#5C4A3A]"
+              }`}>
+                "{localized.description}"
+              </span>
+            </h1>
+          </div>
         </header>
 
         <section className="space-y-4 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-6 lg:space-y-0">
-          <div className="rounded-[28px] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent p-5 shadow-xl shadow-black/50 lg:sticky lg:top-8">
+          <div className={`rounded-[28px] border p-5 shadow-xl transition-colors duration-300 lg:sticky lg:top-8 ${
+            isDark
+              ? "border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/5 to-transparent shadow-black/50"
+              : "border-[#D4C4A8] bg-gradient-to-br from-[#F0E6D2] via-[#E8D5B7]/50 to-[#F0E6D2] shadow-[#D4C4A8]/20"
+          }`}>
             <div className="flex items-center gap-4">
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-black/40">
+              <div className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border transition-colors ${
+                isDark
+                  ? "border-white/15 bg-black/40"
+                  : "border-[#D4C4A8] bg-[#E8D5B7]"
+              }`}>
                 <Image
                   src={section.image}
                   alt={`${localized.title} görseli`}
@@ -214,31 +245,49 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                 />
               </div>
               <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-emerald-200/70">
+                <p className={`text-xs uppercase tracking-[0.3em] ${
+                  isDark ? "text-emerald-200/70" : "text-emerald-600"
+                }`}>
                   {t.spotlight}
                 </p>
                 <p className="text-sm font-semibold">
                   {localized.title} {t.spotlightSuffix}
                 </p>
-                <p className="text-[11px] text-slate-200/70">
+                <p className={`text-[11px] ${
+                  isDark ? "text-slate-200/70" : "text-slate-600"
+                }`}>
                   {t.spotlightBody}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-white/5 p-5 shadow-xl shadow-black/40">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-200/70">
+          <div className={`rounded-[28px] border p-5 shadow-xl transition-colors duration-300 ${
+            isDark
+              ? "border-white/10 bg-white/5 shadow-black/40"
+              : "border-[#D4C4A8] bg-[#F0E6D2] shadow-[#D4C4A8]/20"
+          }`}>
+            <p className={`text-xs font-semibold uppercase tracking-[0.3em] ${
+              isDark ? "text-emerald-200/70" : "text-emerald-600"
+            }`}>
               {t.listTitle}
             </p>
             <div className="mt-4 space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
               {isLoading && (
-                <div className="rounded-2xl border border-white/10 bg-black/30 px-3 py-3 text-[11px] text-slate-200/70 text-center">
+                <div className={`rounded-2xl border px-3 py-3 text-[11px] text-center transition-colors ${
+                  isDark
+                    ? "border-white/10 bg-black/30 text-slate-200/70"
+                    : "border-[#D4C4A8] bg-[#E8D5B7] text-[#5C4A3A]"
+                }`}>
                   Yükleniyor...
                 </div>
               )}
               {!isLoading && mergedItems.length === 0 && (
-                <div className="rounded-2xl border border-white/10 bg-black/30 px-3 py-3 text-[11px] text-slate-200/70">
+                <div className={`rounded-2xl border px-3 py-3 text-[11px] transition-colors ${
+                  isDark
+                    ? "border-white/10 bg-black/30 text-slate-200/70"
+                    : "border-[#D4C4A8] bg-[#E8D5B7] text-[#5C4A3A]"
+                }`}>
                   {t.empty}
                 </div>
               )}
@@ -254,9 +303,17 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                 return (
                   <div
                     key={item.id}
-                    className="flex gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-3"
+                    className={`flex gap-3 rounded-2xl border px-3 py-3 transition-colors ${
+                      isDark
+                        ? "border-white/10 bg-black/30"
+                        : "border-[#D4C4A8] bg-[#E8D5B7]"
+                    }`}
                   >
-                    <div className="h-14 w-14 overflow-hidden rounded-xl border border-white/10 bg-black/40 shrink-0">
+                    <div className={`h-14 w-14 overflow-hidden rounded-xl border shrink-0 transition-colors ${
+                      isDark
+                        ? "border-white/10 bg-black/40"
+                        : "border-[#D4C4A8] bg-[#E8D5B7]"
+                    }`}>
                       <Image
                         src={item.image || '/menu/hero.png'}
                         alt={itemName}
@@ -273,19 +330,29 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
                           <p className="text-sm font-semibold">
                             {itemName}
                           </p>
-                          <p className="mt-1 text-[11px] text-slate-200/70">
+                          <p className={`mt-1 text-[11px] ${
+                            isDark ? "text-slate-200/70" : "text-slate-600"
+                          }`}>
                             {itemDescription}
                           </p>
                         </div>
                         <div className="flex flex-col items-end gap-2">
-                          <span className="rounded-full border border-emerald-200/30 bg-emerald-200/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-100">
+                          <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+                            isDark
+                              ? "border-emerald-200/30 bg-emerald-200/10 text-emerald-100"
+                              : "border-emerald-500/40 bg-emerald-50 text-emerald-700"
+                          }`}>
                             {item.price}
                           </span>
                           <a
                             href={whatsappLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center rounded-full border border-emerald-400/40 bg-emerald-500/15 px-3 py-1.5 text-[10px] font-semibold text-emerald-100 shadow-lg shadow-emerald-500/20 transition-all hover:bg-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-0.5"
+                            className={`inline-flex items-center rounded-full border px-3 py-1.5 text-[10px] font-semibold shadow-lg transition-all hover:-translate-y-0.5 ${
+                              isDark
+                                ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-100 shadow-emerald-500/20 hover:bg-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30"
+                                : "border-emerald-500/60 bg-emerald-50 text-emerald-700 shadow-emerald-500/30 hover:bg-emerald-100 hover:shadow-xl hover:shadow-emerald-500/40"
+                            }`}
                           >
                             {t.order}
                           </a>

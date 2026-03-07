@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { useLanguage } from "../hooks/useLanguage";
+import { useTheme } from "../hooks/useTheme";
 
 const languageLabels = {
   en: "English",
@@ -19,18 +20,28 @@ const languageFlags = {
 
 export default function LanguageSelector() {
   const [language, setLanguage] = useLanguage();
+  const [theme] = useTheme();
+  const isDark = theme === "dark";
 
   const handleLanguageChange = useCallback((lang: "en" | "tr" | "ru" | "de") => {
     setLanguage(lang);
   }, [setLanguage]);
 
   return (
-    <div className="flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-wider">
+    <div className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold uppercase tracking-wider transition-colors ${
+      isDark
+        ? "border-white/15 bg-white/10"
+        : "border-[#D4C4A8] bg-[#F0E6D2] shadow-sm"
+    }`}>
       <button
         className={`rounded-full px-2 py-1 transition-colors ${
           language === "en"
-            ? "bg-white text-slate-950"
-            : "text-white/60 hover:text-white"
+            ? isDark
+              ? "bg-white text-slate-950"
+              : "bg-[#5C4A3A] text-[#F0E6D2]"
+            : isDark
+              ? "text-white/60 hover:text-white"
+              : "text-[#5C4A3A] hover:text-[#3D2F1F]"
         }`}
         type="button"
         onClick={() => handleLanguageChange("en")}
@@ -43,8 +54,12 @@ export default function LanguageSelector() {
       <button
         className={`rounded-full px-2 py-1 transition-colors ${
           language === "tr"
-            ? "bg-white text-slate-950"
-            : "text-white/60 hover:text-white"
+            ? isDark
+              ? "bg-white text-slate-950"
+              : "bg-[#5C4A3A] text-[#F0E6D2]"
+            : isDark
+              ? "text-white/60 hover:text-white"
+              : "text-[#5C4A3A] hover:text-[#3D2F1F]"
         }`}
         type="button"
         onClick={() => handleLanguageChange("tr")}
@@ -57,8 +72,12 @@ export default function LanguageSelector() {
       <button
         className={`rounded-full px-2 py-1 transition-colors ${
           language === "ru"
-            ? "bg-white text-slate-950"
-            : "text-white/60 hover:text-white"
+            ? isDark
+              ? "bg-white text-slate-950"
+              : "bg-[#5C4A3A] text-[#F0E6D2]"
+            : isDark
+              ? "text-white/60 hover:text-white"
+              : "text-[#5C4A3A] hover:text-[#3D2F1F]"
         }`}
         type="button"
         onClick={() => handleLanguageChange("ru")}
@@ -71,8 +90,12 @@ export default function LanguageSelector() {
       <button
         className={`rounded-full px-2 py-1 transition-colors ${
           language === "de"
-            ? "bg-white text-slate-950"
-            : "text-white/60 hover:text-white"
+            ? isDark
+              ? "bg-white text-slate-950"
+              : "bg-[#5C4A3A] text-[#F0E6D2]"
+            : isDark
+              ? "text-white/60 hover:text-white"
+              : "text-[#5C4A3A] hover:text-[#3D2F1F]"
         }`}
         type="button"
         onClick={() => handleLanguageChange("de")}
