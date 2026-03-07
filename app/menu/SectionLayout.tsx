@@ -19,36 +19,26 @@ type CustomMenuItem = {
   sortOrder?: number;
 };
 
-// Cache için basit bir in-memory cache
-let cachedItems: CustomMenuItem[] | null = null;
-let cacheTime = 0;
-const CACHE_DURATION = 60000; // 60 saniye
-
 const fetchItems = async (): Promise<CustomMenuItem[]> => {
-  // Cache kontrolü
-  const now = Date.now();
-  if (cachedItems && (now - cacheTime) < CACHE_DURATION) {
-    return cachedItems;
-  }
-
   try {
     const response = await fetch("/api/menu-items", {
-      cache: 'force-cache',
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
     });
     if (!response.ok) {
-      return cachedItems || [];
+      console.error("API response not ok:", response.status, response.statusText);
+      return [];
     }
     const data = (await response.json()) as { items?: CustomMenuItem[] };
     const items = Array.isArray(data.items) ? data.items : [];
     
-    // Cache'i güncelle
-    cachedItems = items;
-    cacheTime = now;
-    
     return items;
   } catch (error) {
     console.error("Failed to fetch menu items:", error);
-    return cachedItems || [];
+    return [];
   }
 };
 
@@ -124,13 +114,10 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
       setIsLoading(true);
       try {
         const items = await fetchItems();
-        // Debounce ile UI güncellemesi
-        timeoutId = setTimeout(() => {
-          if (isActive) {
-            setCustomItems(items);
-            setIsLoading(false);
-          }
-        }, 50);
+        if (isActive) {
+          setCustomItems(items);
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error("Failed to fetch menu items:", error);
         if (isActive) {
@@ -142,8 +129,17 @@ export default function SectionLayout({ section }: SectionLayoutProps) {
     
     refresh();
     
+    // Sayfa görünür olduğunda refresh
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && isActive) {
+        refresh();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    
     return () => {
       isActive = false;
+      document.removeEventListener("visibilitychange", handleVisibility);
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
