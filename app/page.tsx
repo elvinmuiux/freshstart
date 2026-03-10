@@ -37,7 +37,8 @@ const translations = {
     footerRights: "Tüm hakları",
     footerBy: "tarafından korumaktadır",
     footerMadeWith: "Antalya'da ❤️ ile yapıldı",
-    footerSupportedBy: "Tərəfindən dəstəklənir",
+    footerSupportedByBefore: "Bu site ",
+    footerSupportedByAfter: " tarafından desteklenir",
     whatsappMessage: "Merhaba! Fresh Start Ekibi\n\nSipariş vermek istiyorum.",
     whatsappDeliveryMessage: "Merhaba! Fresh Start Ekibi\n\nPaket servis ile sipariş vermek istiyorum.",
   },
@@ -68,7 +69,8 @@ const translations = {
     footerRights: "All rights reserved by",
     footerBy: "",
     footerMadeWith: "Made with ❤️ in Antalya",
-    footerSupportedBy: "Supported by",
+    footerSupportedByBefore: "This site is supported by ",
+    footerSupportedByAfter: "",
     whatsappMessage: "Hello! Fresh Start Team\n\nI would like to place an order.",
     whatsappDeliveryMessage: "Hello! Fresh Start Team\n\nI would like to order for delivery.",
   },
@@ -99,7 +101,8 @@ const translations = {
     footerRights: "Все права защищены компанией",
     footerBy: "",
     footerMadeWith: "Сделано с ❤️ в Анталье",
-    footerSupportedBy: "Поддерживается",
+    footerSupportedByBefore: "Этот сайт поддерживается ",
+    footerSupportedByAfter: "",
     whatsappMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы сделать заказ.",
     whatsappDeliveryMessage: "Здравствуйте! Команда Fresh Start\n\nЯ хотел бы заказать доставку.",
   },
@@ -130,7 +133,8 @@ const translations = {
     footerRights: "Alle Rechte vorbehalten von",
     footerBy: "",
     footerMadeWith: "Mit ❤️ in Antalya gemacht",
-    footerSupportedBy: "Unterstützt von",
+    footerSupportedByBefore: "Diese Seite wird von ",
+    footerSupportedByAfter: " unterstützt",
     whatsappMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Bestellung aufgeben.",
     whatsappDeliveryMessage: "Hallo! Fresh Start Team\n\nIch möchte eine Lieferung bestellen.",
   },
@@ -258,10 +262,10 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <p className={`text-[10px] ${
+              <p className={`text-xs ${
                 isDark ? "text-slate-300/60" : "text-[#5C4A3A]/70"
               }`}>
-                {t.footerSupportedBy}{" "}
+                {t.footerSupportedByBefore}
                 <Link
                   href="https://descube.com"
                   target="_blank"
@@ -272,6 +276,7 @@ export default function Home() {
                 >
                   descube
                 </Link>
+                {t.footerSupportedByAfter}
               </p>
             </div>
           </div>
