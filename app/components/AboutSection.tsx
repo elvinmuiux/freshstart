@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type AboutSectionTranslations = {
   aboutTitle: string;
   aboutBody: string;
@@ -89,7 +91,7 @@ export default function AboutSection({ t, theme }: AboutSectionProps) {
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
-            <a
+            <Link
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-lg transition hover:opacity-90 ${
                 isDark
                   ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-100 shadow-emerald-500/20 hover:bg-emerald-500/25"
@@ -101,8 +103,8 @@ export default function AboutSection({ t, theme }: AboutSectionProps) {
               aria-label="WhatsApp ile iletişim"
             >
               {t.whatsapp}
-            </a>
-            <a
+            </Link>
+            <Link
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-lg transition hover:opacity-90 ${
                 isDark
                   ? "border-sky-400/40 bg-sky-500/15 text-sky-100 shadow-sky-500/20 hover:bg-sky-500/25"
@@ -112,8 +114,8 @@ export default function AboutSection({ t, theme }: AboutSectionProps) {
               aria-label="Telefonla arama"
             >
               {t.phone}
-            </a>
-            <a
+            </Link>
+            <Link
               className={`group relative inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-widest shadow-lg transition-transform hover:-translate-y-0.5 overflow-hidden ${
                 isDark
                   ? "border-emerald-400/40 text-emerald-100 shadow-emerald-500/20"
@@ -130,7 +132,7 @@ export default function AboutSection({ t, theme }: AboutSectionProps) {
               <span className={`relative z-10 transition-transform group-hover:translate-x-1 ${
                 isDark ? "text-emerald-200" : "text-emerald-700"
               }`}>→</span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

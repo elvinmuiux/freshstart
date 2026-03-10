@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type DeliverySectionTranslations = {
   deliveryTitle: string;
   deliveryBody: string;
@@ -38,7 +40,7 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
         <div className="relative flex items-center gap-4">
           <div className="flex-shrink-0 self-center">
             <div className="relative flex flex-col gap-4">
-              <a
+              <Link
                 href="https://maps.app.goo.gl/75gPMBxt7wVTRN5z8?g_st=aw"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -79,8 +81,8 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
                     isDark ? "text-slate-200/70" : "text-[#5C4A3A]"
                   }`}>Antalya, Kundu</p>
                 </div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/menu"
                 className="group relative flex items-center gap-3 cursor-pointer transition-transform hover:scale-105"
                 aria-label="Menü sayfasına git"
@@ -112,7 +114,7 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
                     isDark ? "text-slate-200/70" : "text-[#5C4A3A]"
                   }`}>{t.fastDelivery}</p>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex-1 space-y-3">
@@ -155,7 +157,7 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
         </p>
         <div className="flex items-center justify-center gap-4 lg:justify-start">
           {/* WhatsApp */}
-          <a
+          <Link
             className={`group relative flex h-16 w-16 items-center justify-center rounded-2xl border shadow-lg transition-all duration-300 hover:-translate-y-1 ${
               isDark
                 ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 to-emerald-600/10 shadow-emerald-500/10 hover:border-emerald-400/50 hover:shadow-xl hover:shadow-emerald-500/20"
@@ -186,10 +188,10 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
                 <path d="M12 2a10 10 0 0 0-8.74 14.88L2 22l5.27-1.38A10 10 0 1 0 12 2zm0 2a8 8 0 0 1 6.93 12.01.98.98 0 0 0-.1.74l.75 2.8-2.9-.76a.98.98 0 0 0-.73.1A8 8 0 1 1 12 4zm4.07 10.17c-.22-.11-1.28-.63-1.48-.7-.2-.08-.35-.11-.5.11-.14.22-.56.7-.68.85-.13.14-.25.16-.47.05-.22-.11-.92-.34-1.75-1.08-.64-.57-1.08-1.29-1.2-1.5-.12-.22-.01-.34.09-.46.09-.09.22-.24.33-.36.11-.12.14-.2.22-.34.07-.14.04-.26-.02-.37-.06-.11-.5-1.2-.7-1.64-.18-.43-.38-.37-.5-.37h-.43c-.15 0-.37.05-.57.26-.19.22-.75.74-.75 1.8s.77 2.09.88 2.23c.11.14 1.52 2.32 3.68 3.26.51.22.92.35 1.23.45.52.16.99.14 1.37.08.42-.06 1.28-.52 1.46-1.02.18-.5.18-.93.13-1.02-.05-.09-.2-.14-.42-.25z" />
               </svg>
             </div>
-          </a>
+          </Link>
 
           {/* Phone */}
-          <a
+          <Link
             className={`group relative flex h-16 w-16 items-center justify-center rounded-2xl border shadow-lg transition-all duration-300 hover:-translate-y-1 ${
               isDark
                 ? "border-sky-500/30 bg-gradient-to-br from-sky-500/15 to-blue-500/10 shadow-sky-500/10 hover:border-sky-400/50 hover:shadow-xl hover:shadow-sky-500/20"
@@ -222,10 +224,10 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.26-1.26a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
               </svg>
             </div>
-          </a>
+          </Link>
 
           {/* Instagram */}
-          <a
+          <Link
             className={`group relative flex h-16 w-16 items-center justify-center rounded-2xl border shadow-lg transition-all duration-300 hover:-translate-y-1 ${
               isDark
                 ? "border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-500/15 via-pink-500/10 to-purple-500/10 shadow-fuchsia-500/10 hover:border-fuchsia-400/50 hover:shadow-xl hover:shadow-fuchsia-500/20"
@@ -262,7 +264,7 @@ export default function DeliverySection({ t, theme }: DeliverySectionProps) {
                 <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
               </svg>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
